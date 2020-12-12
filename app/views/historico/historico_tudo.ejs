@@ -1,0 +1,118 @@
+<%- include('../includes/menu_header'); %>
+
+<% if(usuario.nivel == 3){%>
+
+
+<div class="page-content">
+	<!-- Page Header-->
+	<div class="page-header">
+		<div class="container-fluid">
+			<h2 class="h5 no-margin-bottom">Meu histórico</h2>
+		</div>
+	</div>
+
+	<section class="margin-bottom-sm">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-8">
+					<div class="line-chart block chart h-100">
+						<%- include('grafico'); %>
+					</div>
+				</div>
+				
+
+				<div class="col-lg-4">
+					<div class="block h-100">
+						<div class="title">
+							<strong class="d-block block-border-bottom">Filtrar histórico</strong>
+							<span class="d-block">Você pode escolher uma das opções pré-definidas para filtrar o seu gráfico.</span>
+							<div class="col-sm-12 offset-lg-2">
+
+								<button id="grafico_botao_tudo" class="btn btn-primary ajax-load margin-t-10 margin-r-10 active width100-mobile" href="/sistema/historico">Tudo</button>
+
+								<button class="btn btn-primary ajax-load-to margin-t-10 margin-r-10 width100-mobile" data-to="line-chart" href="/sistema/historico/ultimos-30dias">30 D</button>
+
+								<button class="btn btn-primary ajax-load-to margin-t-10 margin-r-10 width100-mobile" data-to="line-chart" href="/sistema/historico/ultimos-7dias">7 D</button>
+
+							</div>
+
+							<span class="d-block margin-t-10">Selecione a data para relátorio.</span>
+
+							
+						</div>
+						<div class="block-body">
+							<form class="form-horizontal" method="POST" action="" enctype="multipart/form-data">
+								<div class="form-group row">
+									<label class="col-sm-3 form-control-label">Inicial:</label>
+									<div class="col-sm-9">
+										<input type="date" name="data_inicial" class="form-control mb-3 mb-3">
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-sm-3 form-control-label">Final:</label>
+									<div class="col-sm-9">
+										<input type="date" name="data_final" class="form-control mb-3 mb-3">
+									</div>
+								</div>
+
+								<div class="form-group row">       
+									<div class="col-sm-9 offset-sm-3">
+										<button type="submit" class="btn btn-primary ajax-submit-load-to" data-to="line-chart" data-href="/sistema/historico/filtrar-data" >Pesquisar</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</section>
+
+
+	<section class="margin-bottom-sm">
+		<div class="container-fluid">
+			<div class="block margin-b-0">
+
+				<div class="title">
+					<strong class="d-block">Informação</strong>
+				</div>
+
+				<div class="warning-block text-center padding-10">
+					Para ver detalhes das operações, acesse a sua corretora!
+				</div>
+
+			</div>
+		</div>
+
+	</section>
+
+</div>
+
+
+
+
+
+
+<script type="text/javascript">
+	<% if(data[usuario.id +'_conta'].acao == 'iniciar'){ %>
+	zerarIntervalo();
+	setarPararTimer();
+	timer120sec('/sistema/historico');
+	<%}%>
+</script>
+
+
+
+<%}else{%>
+
+
+<div class="page-content">
+	<div class="container-fluid">
+		<div class="alert error-block margin-t-10">
+			Você não pode acessar essa página!
+		</div>
+	</div>
+</div>
+
+<%}%>

@@ -1,0 +1,75 @@
+	<% if(usuario.nivel ==3){%>
+
+	<section class="margin-bottom-sm">
+		<div class="container-fluid">
+			<div class="row d-flex align-items-stretch">
+
+				<div class="col-lg-4 col-xl-4">   
+					<div class="stats-with-chart-1 block <%= data_conta_b.status == 'standby' && data_conta_b.acao == 'iniciar' ? 'dashborder-5' : data_conta_b.status == 'conectado' ? 'border-sucess sucess-block-trader-color' : ''%>">
+						<div class="title"> <strong class="d-block">Status</strong></div>
+						<div class="row d-flex align-items-end justify-content-between">
+							<div class="col-sm-12">
+								<div class="text">
+									<strong class="d-block <%= data_conta_b.status == 'conectado' ? 'dashtext-2' : 
+									data_conta_b.status == 'standby' && data_conta_b.acao == 'iniciar' ? 'dashtext-5':
+									'dashtext-3'%>"> 
+									<%= data_conta_b.status == 'conectado' ? 'Conectado' : 
+									data_conta_b.status ==  'standby' && data_conta_b.acao == 'iniciar' ? 'Aguardando Trader':
+									'Desconectado' %>
+
+
+
+								</strong>
+								<span class="d-block">Status de conexão</span>
+								<% if(data_conta_b.acao == 'parar' || data_conta_b.status == 'desconectado'){%>
+								<small class="d-block">Atualizado a pouco</small>
+								<%}else{%>
+								<small class="d-block">Próxima atualização em 
+									<span class="timer_header_container">
+										<span class="timer_header">59</span>'s
+									</span>
+								</small>
+
+								<%if(data_conta_b.status ==  'standby'){%>
+								<i class="margin-t-10 red-text">Por motivo de liquidez do mercado, todos participam de uma fila aleatória. Mas não se preocupe, a operação só encerra depois que todos participarem.</i>
+
+								<%}
+							}%>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+
+		<div class="col-lg-4 col-xl-4">
+			<div class="stats-with-chart-1 block">
+				<div class="title"> <strong class="d-block">Performance Últimas 24h</strong></div>
+				<div class="row d-flex align-items-end justify-content-between">
+
+					<div class="col-sm-12 col-md-5">
+						<div class="text"><strong class="d-block dashtext-2"><%= data[usuario.id +'_acertividade'].entradas %></strong>
+							<span class="d-block">Entradas</span>
+							<small class="d-block">Ações realizadas</small>
+						</div>
+					</div>
+					<div class="col-sm-12 col-md-5">
+						<div class="text">
+							<strong class="d-block dashtext-2"><%= data[usuario.id +'_acertividade'].porcentagem %>%</strong>
+							<span class="d-block">Acertividade</span>
+							<small class="d-block">Relatório geral</small>
+						</div>
+					</div>
+
+
+
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+</section>
+
+<%}%>
