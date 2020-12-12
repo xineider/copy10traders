@@ -162,15 +162,6 @@ nav#sidebar a[aria-expanded="true"] {
   border: 0;
 }
 
-.form-control:focus {
-  color: #979a9f;
-  background-color: transparent;
-  border-color: #DB6574;
-  outline: none;
-  -webkit-box-shadow: 0 0 0 0.2rem rgba(219, 101, 116, 0.25);
-  box-shadow: 0 0 0 0.2rem rgba(219, 101, 116, 0.25);
-}
-
 
 .color-disabled{
   color: #d2d2d2!important;
