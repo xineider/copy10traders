@@ -8,9 +8,32 @@
 			<div class="col-sm-12 col-md-5">
 				<div class="card h-100 gradient-card-1">
 					<div class="card-body">
-						<h5 class="card-title">Atividade</h5>
+						<div class="operacional_dashboard">
+							<h5 class="card-title">Operacional</h5>
+							<div class="red-text bold">Defina seu operacional e depois inicie o sistema!</div>
 
-						<div class="margin-t-20">
+							<form>
+								<div class="form-group">
+									<div for="valor_entrada" class="white-text">Valor de Entrada</div>
+									<input type="number" class="form-control" id="valor_entrada" name="valor_entrada" value="100">
+								</div>
+								<div class="form-group">
+									<div for="valor_stop" class="white-text">Valor de Stop</div>
+									<input type="number" class="form-control" id="valor_stop" name="valor_stop" value="200">
+								</div>
+
+								<div class="text-center white-text">Tipo de Conta</div>
+								<div class="custom-control custom-switch text-center">
+									<label>Real</label>
+									<input type="checkbox" class="custom-control-input" id="customSwitch1">
+									<label class="custom-control-label color-awaiting" for="customSwitch1">Treinamento</label>
+								</div>
+
+
+							</form>
+
+						</div>
+<!-- 						<div class="margin-t-20">
 							<div id="Grupo_849">
 								<svg class="Retngulo_3">
 									<rect id="Retngulo_3" rx="3" ry="3" x="0" y="0" width="6" height="115">
@@ -142,7 +165,9 @@
 									</div>
 								</div>
 							</div>
-						</div>
+						</div> -->
+
+
 					</div>
 				</div>
 			</div>
@@ -201,7 +226,7 @@
 	<section class="no-padding-bottom margin-top-sm">
 		<div class="row">
 
-			<div class="col-sm-12 col-md-7">
+			<div class="col-sm-12">
 				<div class="card h-100 gradient-card-3  margin-b-0">
 
 					<h5 class="card-title">Notícias</h5>
@@ -250,7 +275,7 @@
 			</div>
 
 
-			<div class="col-sm-12 col-md-5">
+<!-- 			<div class="col-sm-12 col-md-5">
 				<div class="card h-100 gradient-card-4 margin-b-0">
 
 					<h5 class="card-title">Mensagens do Sistema</h5>
@@ -286,10 +311,10 @@
 
 				</div>
 			</div>
+		-->
+	</div>
+</section>
 
-		</div>
-	</section>
-	
 
 
 
