@@ -7,26 +7,27 @@ var data = {};
 var app = express();
 app.use(require('express-is-ajax-request'));
 
+
+var moment = require('moment');
+
 //var io = require("socket.io-client");
 
 const mongoose = require('mongoose');
 
 /*Liçenca do Usuário*/
-var licencaUser = require('../model/licencaModel.js');
-
-
+var licencaModel = require('../model/licencaModel.js');
 
 /*Usuário Conexão*/
 
-const teste_conexaoUser = require('../model/conexaoTesteModel.js');
+const teste_conexaoModel = require('../model/conexaoTesteModel.js');
 
 /*Conta do Usuário*/
 
-const contaUser = require('../model/contaModel.js');
+const contaModel = require('../model/contaModel.js');
 
 /*Mensagem*/
 
-const mensagemUser = require('../model/mensagemModel.js');
+const mensagemModel = require('../model/mensagemModel.js');
 
 /*entradas usuario*/
 
@@ -44,8 +45,6 @@ const sessaoStatusModel= require('../model/sessaoModel.js');
 /*Trader Limite*/
 const traderLimiteModel = require('../model/traderLimiteModel.js');
 
-/*Configurações do Sistema*/
-var configuracoes_sistema = require('../model/configuracoes_sistemaModel.js');
 
 /*Sessão dos Usuário*/
 var sessao_usuarioModel = require('../model/usuarioSessao.js');
@@ -66,130 +65,147 @@ router.get('/', function(req, res, next) {
 	console.log(req.session.usuario);
 	if(req.session.usuario.nivel == 3){
 
-			licencaUser.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_licenca){
+		licencaModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_licenca){
 
-				if(data_licenca != null){	
-					data[req.session.usuario.id + '_licenca_user'] = data_licenca;				
-					hoje = new Date();
-					data_fim = data_licenca.data_fim;
-					data_fim.setDate(data_fim.getDate() + 1);
-					diferencaData = data_fim - hoje;
-					dias_faltantes = Math.floor(diferencaData / (1000 * 60 * 60 * 24)) + 1;
-					data[req.session.usuario.id + '_licenca_user_dias'] = dias_faltantes;
-					req.session.usuario.creditos = data_licenca.creditos;
-					req.session.usuario.licenca_data = data_fim;
-					req.session.usuario.licenca_dias = dias_faltantes;
+			console.log('data_licenca');
+			console.log(data_licenca);
+			console.log('gggggggggggggggggggggggggggggggggggggggg');
+
+			if(data_licenca != null){	
+				data[req.session.usuario.id + '_licenca_user'] = data_licenca;				
+				hoje = new Date();
+				data_fim = data_licenca.data_fim;
+				console.log('data_fim:' + data_fim);
+				var data_fim_utc = new Date(Date.UTC(data_fim.getFullYear(),data_fim.getMonth(),data_fim.getDate()));
+				console.log('data_fim_utc:' + data_fim_utc);
+				moment.locale('pt-br');
+				var data_fim_licenca_moment = moment.utc(data_licenca.data_fim).format('DD/MM/YYYY');
+
+				data_fim.setDate(data_fim.getDate() + 1);
+				diferencaData = data_fim - hoje;
+				dias_faltantes = Math.floor(diferencaData / (1000 * 60 * 60 * 24)) + 1;
+
+				console.log(data_fim.getDate());
+
+
+
+				console.log('data_fim_licenca_moment: ' + data_fim_licenca_moment);
+
+				data[req.session.usuario.id + '_licenca_data_final'] = data_fim_licenca_moment;
+				data[req.session.usuario.id + '_licenca_user_dias'] = dias_faltantes;
+				req.session.usuario.creditos = data_licenca.creditos;
+				req.session.usuario.licenca_data = data_fim;
+				req.session.usuario.licenca_dias = dias_faltantes;
+			}else{
+				data[req.session.usuario.id + '_licenca_user'] = {creditos:0,licenca_user_dias:-1,status:1};
+				data[req.session.usuario.id + '_licenca_user_dias'] = -1;
+			}
+
+			contaModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conta){
+				if(data_conta !=null){
+					data[req.session.usuario.id+'_conta']= data_conta;
 				}else{
-					data[req.session.usuario.id + '_licenca_user'] = {creditos:0,licenca_user_dias:-1,status:1};
-					data[req.session.usuario.id + '_licenca_user_dias'] = -1;
+					data[req.session.usuario.id+'_conta']= {conta_real:false,email:'',senha:'',tipo_banca:0,valor_entrada:100,limite_perda:200,acao:'parar',status:'desconectado',primeira_vez:true};
 				}
 
-				contaUser.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conta){
-					if(data_conta !=null){
-						data[req.session.usuario.id+'_conta_user']= data_conta;
+				teste_conexaoModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conexao){
+
+					if(data_conexao != null){
+						data[req.session.usuario.id+'_conexao'] = data_conexao;
 					}else{
-						data_conta = {conta_real:false,email:'',senha:'',tipo_banca:0,valor_entrada:100,limite_perda:200,acao:'parar',status:'desconectado',primeira_vez:true};
-						data[req.session.usuario.id+'_conta_user']= {conta_real:false,email:'',senha:'',tipo_banca:0,valor_entrada:100,limite_perda:200,acao:'parar',status:'desconectado',primeira_vez:true};
+						data[req.session.usuario.id+'_conexao'] = {email:'',senha:'',status:'primeira_vez'};
 					}
 
-					teste_conexaoUser.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conexao){
+					mensagemModel.find({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id),'deletado':0},function(err,data_mensagem){
 
-						if(data_conexao != null){
-							
-						}else{
-							data_conexao = {email:'',senha:'',status:'primeira_vez'};
-						}
+						data[req.session.usuario.id + '_mensagem'] = data_mensagem;
 
-						mensagemUser.find({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id),'deletado':0},function(err,data_mensagem){
-							
-							data[req.session.usuario.id + '_mensagem'] = data_mensagem;
+						arrayMensagemData = [];
 
-							arrayMensagemData = [];
+						if(data_mensagem.length > 0){
 
-							if(data_mensagem.length > 0){
+							for(i=0;i<data_mensagem.length;i++){
 
-								for(i=0;i<data_mensagem.length;i++){
+								var horario = new Date(data_mensagem[i].data_registro);
+								horario.setHours(horario.getHours() - 3);
+								dia_mensagem = horario.getDate();
 
-									var horario = new Date(data_mensagem[i].data_registro);
-									horario.setHours(horario.getHours() - 3);
-									dia_mensagem = horario.getDate();
-
-									if(dia_mensagem > 0 && dia_mensagem < 10){
-										dia_mensagem = "0" + dia_mensagem;
-									}
-
-									mes_mensagem = horario.getMonth() + 1;
-									if(mes_mensagem > 0 && mes_mensagem < 10){
-										mes_mensagem = "0" + mes_mensagem;
-									}
-
-									ano_mensagem = horario.getFullYear();
-
-									hora_mensagem = horario.getHours();
-
-									if(hora_mensagem >= 0 && hora_mensagem < 10){
-										hora_mensagem = "0" + hora_mensagem;
-									}
-
-									minuto_mensagem = horario.getMinutes();
-
-									if(minuto_mensagem >= 0 && minuto_mensagem < 10){
-										minuto_mensagem = "0" + minuto_mensagem;
-									}
-
-									segundo_mensagem = horario.getSeconds();
-
-									if(segundo_mensagem >= 0 && segundo_mensagem < 10){
-										segundo_mensagem = "0" + segundo_mensagem;
-									}
-
-
-									data_concatenada = dia_mensagem + '/' + mes_mensagem + '/' + ano_mensagem + ' ' + hora_mensagem + ':' + minuto_mensagem + ':' + segundo_mensagem + ' - ';
-
-									arrayMensagemData.push(data_concatenada);
+								if(dia_mensagem > 0 && dia_mensagem < 10){
+									dia_mensagem = "0" + dia_mensagem;
 								}
 
+								mes_mensagem = horario.getMonth() + 1;
+								if(mes_mensagem > 0 && mes_mensagem < 10){
+									mes_mensagem = "0" + mes_mensagem;
+								}
+
+								ano_mensagem = horario.getFullYear();
+
+								hora_mensagem = horario.getHours();
+
+								if(hora_mensagem >= 0 && hora_mensagem < 10){
+									hora_mensagem = "0" + hora_mensagem;
+								}
+
+								minuto_mensagem = horario.getMinutes();
+
+								if(minuto_mensagem >= 0 && minuto_mensagem < 10){
+									minuto_mensagem = "0" + minuto_mensagem;
+								}
+
+								segundo_mensagem = horario.getSeconds();
+
+								if(segundo_mensagem >= 0 && segundo_mensagem < 10){
+									segundo_mensagem = "0" + segundo_mensagem;
+								}
+
+
+								data_concatenada = dia_mensagem + '/' + mes_mensagem + '/' + ano_mensagem + ' ' + hora_mensagem + ':' + minuto_mensagem + ':' + segundo_mensagem + ' - ';
+
+								arrayMensagemData.push(data_concatenada);
 							}
 
-
-							ts = Math.round(new Date().getTime() / 1000);
-							tsYesterday = ts - (24 * 3600);
-							console.log('tsYesterday:' + tsYesterday);
-
-							entradasModel.find({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id),'deletado':0,'executada':true,timestamp:{$gte:tsYesterday}},function(err,data_acertividade){
-								var acertos = 0;
-
-								console.log('-------------- data_acertividade ----------');
-								console.log(data_acertividade);
-								console.log('-------------------------------------------');
+						}
 
 
-								for(i=0;i<data_acertividade.length;i++){
-									if(data_acertividade[i].vitoria == true){
-										acertos++;
-									}
-								}
+						ts = Math.round(new Date().getTime() / 1000);
+						tsYesterday = ts - (24 * 3600);
+						console.log('tsYesterday:' + tsYesterday);
 
-								if(data_acertividade.length > 0){
-									var porcentagem_a = (acertos * 100) / data_acertividade.length;
-									var porcentagem_round = Math.round(porcentagem_a);
-								}else{
-									porcentagem_round = 100;
-								}
+						entradasModel.find({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id),'deletado':0,'executada':true},function(err,data_entradas){
+						
+
+							console.log('-------------- data_entradas ----------');
+							console.log(data_entradas);
+							console.log('-------------------------------------------');
 
 
-								data[req.session.usuario.id+'_acertividade']= {entradas:data_acertividade.length,porcentagem:porcentagem_round};
+							// for(i=0;i<data_acertividade.length;i++){
+							// 	if(data_acertividade[i].vitoria == true){
+							// 		acertos++;
+							// 	}
+							// }
 
-								console.log('00000000000000 data 000000000000000000000');
-								console.log(data);
-								console.log('00000000000000000000000000000000000000000');
+							// if(data_acertividade.length > 0){
+							// 	var porcentagem_a = (acertos * 100) / data_acertividade.length;
+							// 	var porcentagem_round = Math.round(porcentagem_a);
+							// }else{
+							// 	porcentagem_round = 100;
+							// }
 
-								res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'inicio/index', data: data, usuario: req.session.usuario,data_conexao_b:data_conexao,data_mensagem_b:arrayMensagemData,data_conta_b:data_conta});
-							});
-						}).sort({'data_registro':-1}).limit(20);
-					}).sort({'data_cadastro':-1});
+
+							data[req.session.usuario.id+'_entrada_nro_operacoes']= data_entradas.length;
+
+							console.log('00000000000000 data 000000000000000000000');
+							console.log(data);
+							console.log('00000000000000000000000000000000000000000');
+
+							res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'inicio/index', data: data, usuario: req.session.usuario});
+						});
+					}).sort({'data_registro':-1}).limit(20);
 				}).sort({'data_cadastro':-1});
-			});
+			}).sort({'data_cadastro':-1});
+		});
 
 }else{
 
@@ -229,7 +245,7 @@ router.get('/', function(req, res, next) {
 						data[req.session.usuario.id+'_trader_limite'] = {limite_usuarios:200,limite_liquidez:50};
 					}
 
-					contaUser.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conta){
+					contaModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conta){
 						if(data_conta != null){
 
 						}else{
@@ -237,14 +253,14 @@ router.get('/', function(req, res, next) {
 							data_conta = {conta_real:false,email:'',senha:'',tipo_banca:0,valor_entrada:100,limite_perda:200,acao:'parar',status:'desconectado'};
 						}
 
-						teste_conexaoUser.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conexao){
+						teste_conexaoModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conexao){
 
 							if(data_conexao != null){
 
 							}else{									
 								data_conexao = {email:'',senha:''};
 							}
-							mensagemUser.find({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id),'deletado':0},function(err,data_mensagem){
+							mensagemModel.find({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id),'deletado':0},function(err,data_mensagem){
 
 								data[req.session.usuario.id + '_mensagem'] = data_mensagem;
 
@@ -322,7 +338,7 @@ router.post('/popup-confirmacao-alterar-testar-conexao', function(req, res, next
 
 	POST = req.body;
 
-	teste_conexaoUser.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conexao_p){
+	teste_conexaoModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conexao_p){
 		data.dados_c = data_conexao_p;
 		console.log('RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR');
 		console.log('estou dentro do load-container-testar-conexao');
@@ -405,7 +421,7 @@ router.post('/testar-conexao', function(req, res, next) {
 		console.log('cai aqui dentro do POST.email dif vazio!!');
 
 		if(POST.senha != ''){
-			const teste_conexao = new teste_conexaoUser({ 
+			const teste_conexao = new teste_conexaoModel({ 
 				id_usuario:mongoose.Types.ObjectId(req.session.usuario.id),
 				email:POST.email,
 				senha:POST.senha,
@@ -449,98 +465,87 @@ router.post('/popup-confirmacao-iniciar-operacao', function(req, res, next) {
 	console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
 
 
-	configuracoes_sistema.find({},function(err,data_configuracoes){
 
-		if(data_configuracoes != null){
-			data.config_sistema = data_configuracoes;
-		}else{
-			data.config_sistema = {possui_creditos:true};
-		}
+	if(POST.valor_entrada >= 2){
+		if(POST.limite_perda > 0){
+			if(POST.valor_entrada % 1 === 0){
+				if(POST.limite_perda % 1 ===0){
+					if(parseInt(POST.limite_perda) > parseInt(POST.valor_entrada)){
 
-		if(POST.valor_entrada >= 2){
-			if(POST.limite_perda > 0){
-				if(POST.valor_entrada % 1 === 0){
-					if(POST.limite_perda % 1 ===0){
-						if(parseInt(POST.limite_perda) > parseInt(POST.valor_entrada)){
-
+						tipo_conta_n = true;
+						if(POST.tipo_conta == 0){
+							tipo_conta_n = false;
+						}else{
 							tipo_conta_n = true;
-							if(POST.tipo_conta == 0){
-								tipo_conta_n = false;
+						}
+
+						var dias_faltantes_licenca;
+
+						if(req.session.usuario.licenca_dias == undefined){
+							dias_faltantes_licenca = -1;
+						}else{
+							dias_faltantes_licenca = req.session.usuario.licenca_dias;
+						}
+
+
+						if(dias_faltantes_licenca >= 0){
+
+							var creditos_restantes;
+
+							if(req.session.usuario.creditos == undefined){
+								creditos_restantes = 0;
 							}else{
-								tipo_conta_n = true;
+								creditos_restantes = req.session.usuario.creditos;
 							}
 
-							var dias_faltantes_licenca;
-
-							if(req.session.usuario.licenca_dias == undefined){
-								dias_faltantes_licenca = -1;
-							}else{
-								dias_faltantes_licenca = req.session.usuario.licenca_dias;
-							}
 
 
-							if(dias_faltantes_licenca >= 0){
 
-								var creditos_restantes;
+								if(POST.tipo_banca != 1 || (POST.tipo_banca == 1 && (parseInt(POST.valor_entrada) > 0 && parseInt(POST.valor_entrada) <= 100))){
+									if(POST.tipo_banca != 1 || (POST.tipo_banca == 1 && (parseInt(POST.limite_perda) > 0 && parseInt(POST.limite_perda) <= 100))){
 
-								if(req.session.usuario.creditos == undefined){
-									creditos_restantes = 0;
-								}else{
-									creditos_restantes = req.session.usuario.creditos;
-								}
+										teste_conexaoModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conexao){
 
+											data.dados = POST;
+											data.email = data_conexao.email;
 
-								if((creditos_restantes > 0) || data_configuracoes[0].possui_creditos == false){
+											console.log('DDDDDDDDDDDDDDDDDDDDDDDDDDD Data DDDDDDDDDDDDDDDDDDDDDDDDDDD');
+											console.log(data);
+											console.log('DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD');
 
-									if(POST.tipo_banca != 1 || (POST.tipo_banca == 1 && (parseInt(POST.valor_entrada) > 0 && parseInt(POST.valor_entrada) <= 100))){
-										if(POST.tipo_banca != 1 || (POST.tipo_banca == 1 && (parseInt(POST.limite_perda) > 0 && parseInt(POST.limite_perda) <= 100))){
+											res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'inicio/confirmar_inicio_operacao', data: data, usuario: req.session.usuario});
 
-											teste_conexaoUser.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conexao){
-
-												data.dados = POST;
-												data.email = data_conexao.email;
-
-												console.log('DDDDDDDDDDDDDDDDDDDDDDDDDDD Data DDDDDDDDDDDDDDDDDDDDDDDDDDD');
-												console.log(data);
-												console.log('DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD');
-
-												res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'inicio/confirmar_inicio_operacao', data: data, usuario: req.session.usuario});
-
-											}).sort({'data_cadastro':-1});
-
-										}else{
-											res.json({error:'perc_limite_perda_100',element:'input[name="limite_perda"]',texto:'*No percentual não é permitido ter mais que 100% do Stop Loss!'});
-										}
+										}).sort({'data_cadastro':-1});
 
 									}else{
-										res.json({error:'perc_valor_entrada_100',element:'input[name="valor_entrada"]',texto:'*No percentual não é permitido ter mais que 100% do valor de entrada!'});
+										res.json({error:'perc_limite_perda_100',element:'input[name="limite_perda"]',texto:'*No percentual não é permitido ter mais que 100% do Stop Loss!'});
 									}
 
 								}else{
-									res.json({error:'sem_creditos',element:'#error_mensagem_conexao',texto:'Você está sem créditos, por-favor recarregue os créditos!'});
+									res.json({error:'perc_valor_entrada_100',element:'input[name="valor_entrada"]',texto:'*No percentual não é permitido ter mais que 100% do valor de entrada!'});
 								}
-							}else{
-								res.json({error:'acabou_licenca',element:'#error_mensagem_conexao',texto:'Sua licença expirou, por-favor recarregar a licença para poder continuar usando o sistema!'});
-							}
 
 						}else{
-							res.json({error:'limite_perda_num',element:'input[name="limite_perda"]',texto:'*Stop Loss não pode ser menor ou igual que o Valor da Entrada.'});
+							res.json({error:'acabou_licenca',element:'#error_mensagem_conexao',texto:'Sua licença expirou, por-favor recarregar a licença para poder continuar usando o sistema!'});
 						}
 
 					}else{
-						res.json({error:'limite_perda_num',element:'input[name="limite_perda"]',texto:'*Somente valores inteiros. Ex: 100'});
+						res.json({error:'limite_perda_num',element:'input[name="limite_perda"]',texto:'*Stop Loss não pode ser menor ou igual que o Valor da Entrada.'});
 					}
+
 				}else{
-					res.json({error:'qtd_valor_negativo',element:'input[name="valor_entrada"]',texto:'*Somente valores inteiros. Ex: 100'});
+					res.json({error:'limite_perda_num',element:'input[name="limite_perda"]',texto:'*Somente valores inteiros. Ex: 100'});
 				}
 			}else{
-				res.json({error:'qtd_valor_negativo',element:'input[name="limite_perda"]',texto:'*Valor não pode ser 0 ou Negativo!'});
+				res.json({error:'qtd_valor_negativo',element:'input[name="valor_entrada"]',texto:'*Somente valores inteiros. Ex: 100'});
 			}
 		}else{
-			res.json({error:'valor_maior_que_2',element:'input[name="valor_entrada"]',texto:'*Valor minimo é de 2!'});
+			res.json({error:'qtd_valor_negativo',element:'input[name="limite_perda"]',texto:'*Valor não pode ser 0 ou Negativo!'});
 		}
+	}else{
+		res.json({error:'valor_maior_que_2',element:'input[name="valor_entrada"]',texto:'*Valor minimo é de 2!'});
+	}
 
-	});
 });
 
 router.post('/popup-confirmacao-parar-operacao', function(req, res, next) {
@@ -557,13 +562,6 @@ router.post('/iniciar-operacao', function(req, res, next) {
 	console.log(POST);
 	console.log('JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ');
 
-	configuracoes_sistema.find({},function(err,data_configuracoes){
-
-		if(data_configuracoes != null){
-			data.config_sistema = data_configuracoes;
-		}else{
-			data.config_sistema = {possui_creditos:true};
-		}
 
 		if(POST.valor_entrada >= 2){
 			if(POST.limite_perda > 0){
@@ -598,7 +596,7 @@ router.post('/iniciar-operacao', function(req, res, next) {
 								}
 
 
-								if((creditos_restantes > 0) || data_configuracoes[0].possui_creditos == false){
+								if(creditos_restantes > 0){
 
 									if(POST.tipo_banca != 1 || (POST.tipo_banca == 1 && (parseInt(POST.valor_entrada) > 0 && parseInt(POST.valor_entrada) <= 100))){
 										if(POST.tipo_banca != 1 || (POST.tipo_banca == 1 && (parseInt(POST.limite_perda) > 0 && parseInt(POST.limite_perda) <= 100))){
@@ -612,9 +610,9 @@ router.post('/iniciar-operacao', function(req, res, next) {
 											};
 
 
-											teste_conexaoUser.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conexao){
+											teste_conexaoModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conexao){
 
-												const new_conta_user = new contaUser({ 
+												const new_conta_user = new contaModel({ 
 													id_usuario:mongoose.Types.ObjectId(req.session.usuario.id),
 													tipo:tipo_cliente,
 													email: data_conexao.email, 
@@ -672,7 +670,7 @@ router.post('/iniciar-operacao', function(req, res, next) {
 			res.json({error:'valor_maior_que_2',element:'input[name="valor_entrada"]',texto:'*Valor minimo é de 2!'});
 		}
 
-	});
+
 
 });
 
@@ -684,7 +682,7 @@ router.post('/parar-operacao', function(req, res, next) {
 	console.log(POST);
 	console.log('JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ');
 
-	contaUser.findOneAndUpdate({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},{'$set':{'acao':'parar'}},function(err){
+	contaModel.findOneAndUpdate({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},{'$set':{'acao':'parar'}},function(err){
 		if (err) {
 			return handleError(err);
 		}else{
@@ -722,9 +720,9 @@ router.post('/iniciar-operacao-trader', function(req, res, next) {
 						tipo_banca = 'percentual';
 					};
 
-					teste_conexaoUser.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conexao){
+					teste_conexaoModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conexao){
 
-						const new_conta_user = new contaUser({ 
+						const new_conta_user = new contaModel({ 
 							id_usuario:mongoose.Types.ObjectId(req.session.usuario.id),
 							tipo:'trader',		
 							email: data_conexao.email, 
@@ -906,7 +904,7 @@ router.post('/limpar-mensagens', function(req, res, next) {
 	console.log(POST);
 	console.log('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH');
 	
-	mensagemUser.updateMany({'id_usuario':req.session.usuario.id,'deletado':0},{'$set':{'deletado':1}},function(err){
+	mensagemModel.updateMany({'id_usuario':req.session.usuario.id,'deletado':0},{'$set':{'deletado':1}},function(err){
 		if (err) {
 			return handleError(err);
 		}else{
@@ -926,7 +924,7 @@ router.post('/limpar-mensagem/:id', function(req, res, next) {
 	console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
 
 
-	mensagemUser.findOneAndUpdate({'_id':id},{'$set':{'deletado':1}},function(err){
+	mensagemModel.findOneAndUpdate({'_id':id},{'$set':{'deletado':1}},function(err){
 		if (err) {
 			return handleError(err);
 		}else{

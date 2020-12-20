@@ -21,7 +21,6 @@ var pagamentoModel = require('../model/pagamentoModel.js');
 
 var produtoModel = require('../model/produtoModel.js');
 
-var configuracoes_sistema = require('../model/configuracoes_sistemaModel.js');
 
 const mensagemUser = require('../model/mensagemModel.js');
 
@@ -30,95 +29,94 @@ router.get('/', function(req, res, next) {
 	data.link_sistema = '/sistema';
 	data.numero_menu = 2;
 	
-	configuracoes_sistema.find({},function(err,data_configuracoes){
-
-		if(data_configuracoes != null){
-			data.config_sistema = data_configuracoes;
-		}else{
-			data.config_sistema = {possui_creditos:true};
-		}
-		licencaUser.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_licenca){
-
-			mensagemUser.find({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id),"tipo_mensagem":3},function(err,data_mensagem){
-				
-				data[req.session.usuario.id + '_mensagem'] = data_mensagem;
-
-				console.log('------------------------------- data mensagem ----------------------');
-				console.log(data_mensagem);
-				console.log('--------------------------------------------------------------------');
-
-				arrayMensagemData = [];
-
-				if(data_mensagem.length > 0){
-
-					for(i=0;i<data_mensagem.length;i++){
-						var horario = new Date(data_mensagem[i].data_registro);
-						horario.setHours(horario.getHours() - 3);
-						dia_mensagem = horario.getDate();
-
-						if(dia_mensagem > 0 && dia_mensagem < 10){
-							dia_mensagem = "0" + dia_mensagem;
-						}
-
-						mes_mensagem = horario.getMonth() + 1;
-						if(mes_mensagem > 0 && mes_mensagem < 10){
-							mes_mensagem = "0" + mes_mensagem;
-						}
-
-						ano_mensagem = horario.getFullYear();
-
-						hora_mensagem = horario.getHours();
-
-						if(hora_mensagem >= 0 && hora_mensagem < 10){
-							hora_mensagem = "0" + hora_mensagem;
-						}
-
-						minuto_mensagem = horario.getMinutes();
-
-						if(minuto_mensagem >= 0 && minuto_mensagem < 10){
-							minuto_mensagem = "0" + minuto_mensagem;
-						}
-
-						segundo_mensagem = horario.getSeconds();
-
-						if(segundo_mensagem >= 0 && segundo_mensagem < 10){
-							segundo_mensagem = "0" + segundo_mensagem;
-						}
 
 
-						data_concatenada = dia_mensagem + '/' + mes_mensagem + '/' + ano_mensagem + ' ' + hora_mensagem + ':' + minuto_mensagem + ':' + segundo_mensagem + ' - ';
+	if(data_configuracoes != null){
+		data.config_sistema = data_configuracoes;
+	}else{
+		data.config_sistema = {possui_creditos:true};
+	}
+	licencaUser.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_licenca){
 
-						arrayMensagemData.push(data_concatenada);
+		mensagemUser.find({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id),"tipo_mensagem":3},function(err,data_mensagem){
+
+			data[req.session.usuario.id + '_mensagem'] = data_mensagem;
+
+			console.log('------------------------------- data mensagem ----------------------');
+			console.log(data_mensagem);
+			console.log('--------------------------------------------------------------------');
+
+			arrayMensagemData = [];
+
+			if(data_mensagem.length > 0){
+
+				for(i=0;i<data_mensagem.length;i++){
+					var horario = new Date(data_mensagem[i].data_registro);
+					horario.setHours(horario.getHours() - 3);
+					dia_mensagem = horario.getDate();
+
+					if(dia_mensagem > 0 && dia_mensagem < 10){
+						dia_mensagem = "0" + dia_mensagem;
 					}
 
+					mes_mensagem = horario.getMonth() + 1;
+					if(mes_mensagem > 0 && mes_mensagem < 10){
+						mes_mensagem = "0" + mes_mensagem;
+					}
+
+					ano_mensagem = horario.getFullYear();
+
+					hora_mensagem = horario.getHours();
+
+					if(hora_mensagem >= 0 && hora_mensagem < 10){
+						hora_mensagem = "0" + hora_mensagem;
+					}
+
+					minuto_mensagem = horario.getMinutes();
+
+					if(minuto_mensagem >= 0 && minuto_mensagem < 10){
+						minuto_mensagem = "0" + minuto_mensagem;
+					}
+
+					segundo_mensagem = horario.getSeconds();
+
+					if(segundo_mensagem >= 0 && segundo_mensagem < 10){
+						segundo_mensagem = "0" + segundo_mensagem;
+					}
+
+
+					data_concatenada = dia_mensagem + '/' + mes_mensagem + '/' + ano_mensagem + ' ' + hora_mensagem + ':' + minuto_mensagem + ':' + segundo_mensagem + ' - ';
+
+					arrayMensagemData.push(data_concatenada);
 				}
 
-				console.log('arrayMensagemData');
-				console.log(arrayMensagemData);
+			}
 
-				data[req.session.usuario.id + '_mensagem_horario'] = arrayMensagemData;
+			console.log('arrayMensagemData');
+			console.log(arrayMensagemData);
 
-				if(data_licenca != null){
-					data[req.session.usuario.id + '_licenca_user'] = data_licenca;
-					/*Calcular quantos dias faltam para a licença expirar*/
-					hoje = new Date();
-					data_fim = data_licenca.data_fim;
-					data_fim.setDate(data_fim.getDate() + 1);
-					diferencaData = data_fim - hoje;
-					dias_faltantes = Math.floor(diferencaData / (1000 * 60 * 60 * 24)) + 1;
-					data[req.session.usuario.id + '_licenca_user_dias'] = dias_faltantes;
-				}else{
-					data[req.session.usuario.id + '_licenca_user'] = {creditos:0,licenca_user_dias:0,status:1};
-					data[req.session.usuario.id + '_licenca_user_dias'] = -1;
-				}
+			data[req.session.usuario.id + '_mensagem_horario'] = arrayMensagemData;
 
-				console.log('ddddddddddddddddddddddddddddddd');
-				console.log(data);
-				console.log('ddddddddddddddddddddddddddddddd');
+			if(data_licenca != null){
+				data[req.session.usuario.id + '_licenca_user'] = data_licenca;
+				/*Calcular quantos dias faltam para a licença expirar*/
+				hoje = new Date();
+				data_fim = data_licenca.data_fim;
+				data_fim.setDate(data_fim.getDate() + 1);
+				diferencaData = data_fim - hoje;
+				dias_faltantes = Math.floor(diferencaData / (1000 * 60 * 60 * 24)) + 1;
+				data[req.session.usuario.id + '_licenca_user_dias'] = dias_faltantes;
+			}else{
+				data[req.session.usuario.id + '_licenca_user'] = {creditos:0,licenca_user_dias:0,status:1};
+				data[req.session.usuario.id + '_licenca_user_dias'] = -1;
+			}
 
-				res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'minha_conta/minha_conta', data: data, usuario: req.session.usuario});
-			}).sort({'data_registro':-1}).limit(30);
-		});
+			console.log('ddddddddddddddddddddddddddddddd');
+			console.log(data);
+			console.log('ddddddddddddddddddddddddddddddd');
+
+			res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'minha_conta/minha_conta', data: data, usuario: req.session.usuario});
+		}).sort({'data_registro':-1}).limit(30);
 	});
 });
 
@@ -184,6 +182,7 @@ router.post('/alterar-senha', function(req, res, next) {
 
 
 });
+
 
 
 

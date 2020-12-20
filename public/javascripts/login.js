@@ -79,6 +79,19 @@ $(document).ready(function () {
     		'<div>Recomendamos utilizar navegadores mais recentes tais como: <span class="bold">Google Chrome, Opera, Firefox.</span></div>');
     }
 
+
+    $(document).on('change', '#exibir_senha', function(e) {
+    	e.preventDefault();
+    	if($('#exibir_senha').is(':checked') == true){
+    		$('#login-password').attr('type','text');
+    	}else{
+    		$('#login-password').attr('type','password');
+    	}
+
+    });
+
+    
+
 });
 
 

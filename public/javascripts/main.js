@@ -147,25 +147,11 @@ $(document).ready(function () {
 	});
 
 
-	var menu_fechado = false;
 
-
-	$('.sidebar-toggle').on('click', function () {
-		$(this).toggleClass('active');
-
-		$('#sidebar').toggleClass('shrinked');
-		$('.page-content').toggleClass('active');
-		$(document).trigger('sidebarChanged');
-
-		if ($('.sidebar-toggle').hasClass('active')) {
-			$('.navbar-brand .brand-sm').addClass('visible');
-			$('.navbar-brand .brand-big').removeClass('visible');
-			$(this).find('i').attr('class', 'fas fa-long-arrow-alt-right');
-		} else {
-			$('.navbar-brand .brand-sm').removeClass('visible');
-			$('.navbar-brand .brand-big').addClass('visible');
-			$(this).find('i').attr('class', 'fas fa-long-arrow-alt-left');
-		}
+	$(document).on('click', '.sidebar-toggle', function(e) {
+		e.preventDefault();
+		console.log('clique no sidebar-toggle');
+		$('.menu_mobile').toggleClass('active');
 	});
 
 
@@ -293,6 +279,56 @@ $(document).ready(function () {
 			}
 		}
 	});
+
+
+
+	$(document).on('change','.copiar_este_trader',function(e){
+		e.preventDefault();
+		console.log('estou no change do copiar_este_trader');
+		console.log($('.copiar_este_trader').val());
+		console.log('======================================');
+
+		console.log($(this).is(':checked'));
+		var checkado = false;
+
+		if($(this).is(':checked')){
+			checkado = true;
+		}
+
+		var array_valores = [
+		{name:'numero_operador',value:$(this).val()},
+		{name:'checkado',value:checkado}
+		];
+
+		console.log('array_valores');
+		console.log(array_valores);
+
+		$.ajax({
+			method: 'POST',
+			async: true,
+			data: array_valores,
+			url: '/sistema/operadores/alterar-usuarios-operadores',
+			beforeSend: function(request){
+				adicionarLoader();
+			},
+			success: function(data) {
+				console.log('****************** data ***********************');
+				console.log(data);
+				console.log('***********************************************');
+				removerLoader();
+			},
+			error: function(xhr) { 
+				alert("Error, contate o administrador ou reinicie a pagina.");
+				removerLoader();
+			}
+		});
+
+
+
+	});
+
+
+
 
 	$(document).on('change','#tipo_trader_escolha',function(){
 		if($(this).val() != 0){

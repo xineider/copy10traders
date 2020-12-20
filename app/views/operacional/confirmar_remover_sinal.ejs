@@ -1,0 +1,26 @@
+
+
+<div class="padding-10">
+	<h5>Confirmar Remoção Sinal</h5>
+
+	<div class="margin-b-10">
+
+		Você tem certeza que deseja apagar o sinal <br><strong><%= data[usuario.id +'_sinal_remover_par'] %>-<%= data[usuario.id +'_sinal_remover'][0].direcao %>-<%= data[usuario.id +'_sinal_remover_horario'] %>-M<%= data[usuario.id +'_sinal_remover'][0].tempo_expiracao %></strong> do(a) <strong><%= data[usuario.id +'_operador_escolhido_r'][0].nome%></strong> ?
+
+
+	</div>
+
+	<form method="POST" action="" enctype="multipart/form-data">
+
+		<input type="hidden" name="id_sinal"  value="<%= data[usuario.id +'_sinal_remover'][0]._id %>">
+
+
+		<div class="modal-footer">
+
+			<button class="btn btn_modal btn_modal_close margin-r-10 pointer" data-dismiss="modal">Não</button>
+
+			<button class="btn btn-primary ajax-submit" data-href="/sistema/operacional/remover-sinal" data-dismiss="modal" data-action="/sistema/operacional">Sim</button>
+		</div>
+	</form>
+
+</div>

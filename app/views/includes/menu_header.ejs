@@ -1,15 +1,64 @@
-<nav id="sidebar" class="">        
+<div class="hide-desktop background-primary text-center header-mobile">
+	Copy 10 Traders
+
+	<button class="sidebar-toggle">
+		<i class="fas fa-bars"></i>
+	</button>
+
+
+	<div class="menu_mobile hide">
+
+		<nav class="menu_box_mobile">   
+			<ul class="list-unstyled">
+				<li class="<%= data[usuario.id + '_numero_menu'] == 1 ? 'active' : ''%>">
+					<a class="ajax-load" href="/sistema"> <i class="fas fa-home"></i>Home </a>
+				</li>
+
+				<li class="<%= data[usuario.id + '_numero_menu'] == 2 ? 'active' : ''%>" >
+					<a class="ajax-load" href="/sistema/operacional"> <i class="fas fa-cog"></i>Operacional </a>
+				</li>
+
+				<li class="<%= data[usuario.id + '_numero_menu'] == 3 ? 'active' : ''%>">
+					<a class="ajax-load" href="/sistema/operadores"> <i class="fas fa-user"></i>Operadores Globais </a>
+				</li>
+
+
+				<% if(usuario.nivel == 2){%>
+
+
+				<%}%>
+
+				<li><a class="logout" href="/logout" onclick="return confirm('Você deseja sair?');"> <i class="icon-logout"></i>Sair </a></li>
+
+			</ul>
+		</nav>
+
+	</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+<nav id="sidebar" class="hide-mobile">   
+	<div class="white-text text-center">LOGO</div>     
 	<ul class="list-unstyled">
 		<li class="<%= data[usuario.id + '_numero_menu'] == 1 ? 'active' : ''%>">
 			<a class="ajax-load" href="/sistema"> <i class="fas fa-home"></i>Home </a>
 		</li>
 
 		<li class="<%= data[usuario.id + '_numero_menu'] == 2 ? 'active' : ''%>" >
-			<a class="ajax-load" href="/sistema/operacional"> <i class="fas fa-user"></i>Operacional </a>
+			<a class="ajax-load" href="/sistema/operacional"> <i class="fas fa-cog"></i>Operacional </a>
 		</li>
 
 		<li class="<%= data[usuario.id + '_numero_menu'] == 3 ? 'active' : ''%>">
-			<a class="ajax-load" href="/sistema/operadores"> <i class="fas fa-cog"></i>Operadores Globais </a>
+			<a class="ajax-load" href="/sistema/operadores"> <i class="fas fa-user"></i>Operadores Globais </a>
 		</li>
 
 
@@ -26,42 +75,92 @@
 
 
 
-	<div class="conectar_box white-text">
+	<div class="conectar_box white-text hide-mobile">
 		Olá <strong>Usuário</strong>, Conecte sua conta da corretora para começar!
 
-		<form method="POST" action="/">
+		<%if(data[usuario.id +'_conexao'].status == 'conectado' || data[usuario.id +'_conexao'].status == ''){%>
+		<div class="block-body">
+
 			<div class="form-group">
-				<input id="login-username" type="email" name="email" required data-msg="Por-favor digite o seu e-mail" class="input-material" placeholder="Email acesso da plataforma ">									
-			</div>
-			<div class="form-group">
-				<input id="login-password" type="password" name="senha" required data-msg="Por-favor digite sua senha" class="input-material" placeholder="Senha acesso da plataforma">										
+				<%if(data[usuario.id +'_conexao'].status == 'conectado'){%>
+				<label class="form-control-label dashtext-2">Conta verificada Como:</label>
+				<%}else{%>
+				<label class="form-control-label dashtext-5">Testando Conta Como:</label>
+				<%}%>
+				<input type="email" class="form-control" name="email" disabled value="<%= data[usuario.id +'_conexao'].email%>">
 			</div>
 
-			<button class="btn btn-testar-conexao">
-				Teste de Conexão
-			</button>
-		</form>
+			<div class="form-group"> 
+
+				<button type="button" <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : '' %> data-href="/sistema/popup-confirmacao-alterar-testar-conexao" class="btn <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : 'btn-primary' %> ajax-submit-open-modal" data-modal='#modalinfo'>Alterar Conta</button>
+
+			</div>
+
+		</div>
+
+		<div class="block-body">
+			<% if(data[usuario.id +'_conexao'].status == 'conectado' && data[usuario.id +'_conta'].acao != 'iniciar'){%>
+			<div class="alert sucess-block fade show justify" id="caixa_alert_conectado">
+				Conta testada com <b>sucesso!</b> Por-favor clique no botão <b>"Conectar"</b> para iniciar a operação.Após confirmar o seu operacional.
+			</div>
+
+			<%}else if(data[usuario.id +'_conexao'].status == ''){%>
+			<div class="alert warning-block fade show" id="caixa_alert_conectado justify">
+				Não se preocupe, a sua conta ainda está sendo testada, tentando novamente em <span class="timer_header_container">
+					<span class="timer_header">59</span>'s
+				</span>
+
+				<div class="text-center margin-t-10">
+					<i class="fas fa-spinner fa-pulse fa-fw"></i>
+					Testando conexão ...
+				</div>
+			</div>
+
+			<% } %>
+		</div>
+
+
+		<%}else{%>
+
+		<%- include('../inicio/testar_conexao_form')%>
+
+
+
+
+		<%}%>
+
+		<div class="block-body">
+			<% if(data[usuario.id +'_conexao'].status == 'erro de conexao'){%>
+			<div class="alert error-block fade show justify" id="caixa_alert_conectado">
+				<b>Usuário</b> ou <b>senha</b> não conferem com a da plataforma! Por-favor verifique os seus dados, e teste a conexão novamente.
+			</div>
+
+			<%}else if(data[usuario.id +'_conexao'].status == 'primeira_vez'){%>
+			<div class="alert transparent-block justify margin-t-10">
+				Para poder utilizar o sistema, informe nos campos acima os dados da corretora e clique no botão testar conexão! 
+			</div>
+
+			<%}%>
+
+		</div>
 
 
 	</div>
 
-	<div class="licenca_restante_container">
+	<div class="licenca_restante_container hide-mobile">
 		<div class="licenca_restante_box white-text">
-			<div>Liçenca Restante<span class="float-right">73 dias</span></div>
+			<div>Liçenca Restante<span class="float-right"><%= data[usuario.id +'_licenca_user_dias']%> dias</span></div>
 
 			<div class="progress">
 				<div class="progress-bar" role="progressbar" style="width: 30%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
 			</div>
 
-			<div>Vencimento dia 20/01/2021</div>
+			<div>Vencimento dia <%= data[usuario.id +'_licenca_data_final']%></div>
 
 		</div>
 	</div>
 
-
-
-
-
-
-
 </nav>
+
+
+

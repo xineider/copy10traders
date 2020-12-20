@@ -13,94 +13,118 @@ app.use(require('express-is-ajax-request'));
 
 const mongoose = require('mongoose');
 
-const usuarioModel = require('../model/usuariosModel.js');
+const operadoresModel = require('../model/operadoresModel.js');
 
-var licencaUser = require('../model/licencaModel.js');
+const contaModel = require('../model/contaModel.js');
 
-var pagamentoModel = require('../model/pagamentoModel.js');
+const teste_conexaoModel = require('../model/conexaoTesteModel.js');
 
-var produtoModel = require('../model/produtoModel.js');
-
-var configuracoes_sistema = require('../model/configuracoes_sistemaModel.js');
-
-const mensagemUser = require('../model/mensagemModel.js');
+const usuario_operadoresModel = require('../model/usuariosOperadoresModel.js');
 
 router.get('/', function(req, res, next) {
 	data.link_sistema = '/sistema';
 
 	data[req.session.usuario.id+'_numero_menu']= 3;
 
-	console.log('operadores !!!');
-	console.log(data);
-	console.log('!!!!!!!!!!!!!!!!');
+	operadoresModel.find({},function(err,data_operadores){
 
+		console.log('operadores !!!');
+		console.log(data);
+		console.log('!!!!!!!!!!!!!!!!');
+		data[req.session.usuario.id + '_operadores'] = data_operadores;
 
-	res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'operadores/operadores', data: data, usuario: req.session.usuario});
-});
+		contaModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conta){
+			if(data_conta !=null){
+				data[req.session.usuario.id+'_conta']= data_conta;
+			}else{
+				data[req.session.usuario.id+'_conta']= {conta_real:false,email:'',senha:'',tipo_banca:0,valor_entrada:100,limite_perda:200,acao:'parar',status:'desconectado',primeira_vez:true};
+			}
 
+			teste_conexaoModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conexao){
 
+				if(data_conexao != null){
+					data[req.session.usuario.id+'_conexao'] = data_conexao;
+				}else{
+					data[req.session.usuario.id+'_conexao'] = {email:'',senha:'',status:'primeira_vez'};
+				}
 
-router.post('/alterar-senha', function(req, res, next) {
-	POST = req.body;
-
-	console.log('JJJJJJJJJJJJJJJ ESTOU NO INICIAR alterar-senha JJJJJJJJJJJJJJJJJJJJJ');
-	console.log(POST);
-	console.log('JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ');
-
-	if(POST.senha_atual != ''){
-		if(POST.nova_senha != ''){
-			if(POST.repetir_nova_senha != ''){
-
-
-
-				var verificarSenhaAtual =  control.Encrypt(POST.senha_atual);
-
-				console.log('------------------------- verificarSenhaAtual ---------');
-				console.log(verificarSenhaAtual);
-				console.log('--------------------------------------------------------');
-
-				usuarioModel.findOne({'_id':mongoose.Types.ObjectId(req.session.usuario.id),'senha':verificarSenhaAtual},function(err,data_usuario){
-					
-					if(data_usuario != null){
-
-						if(POST.nova_senha == POST.repetir_nova_senha){
-
-							if(POST.nova_senha.length >= 8){
-
-								var novaSenhaCriptografa = control.Encrypt(POST.nova_senha);
-
-								usuarioModel.findOneAndUpdate({'_id':mongoose.Types.ObjectId(req.session.usuario.id)},{'$set':{'senha':novaSenhaCriptografa}},function(err){
-									if (err) {
-										return handleError(err);
-									}else{
-										res.json(data);
-									}
-								});
-							}else{
-								res.json({error:'nova_senha',element:'#error_alterar_senha',texto:'*A nova senha deve ter mais que 8 caracteres!'});
-							}
-
-						}else{
-							res.json({error:'repetir_nova_senha',element:'#error_alterar_senha',texto:'*Por-favor repetir corretamente a nova senha!'});
-						}
+				usuario_operadoresModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_usuarios_operadores){
+					console.log('data_usuarios_operadores');
+					console.log(data_usuarios_operadores);
+					if(data_usuarios_operadores != null){
+						data[req.session.usuario.id+'_usuarios_operadores'] = data_usuarios_operadores;
 					}else{
-						res.json({error:'senha_atual_errada',element:'#error_alterar_senha',texto:'*Senha atual não confere!'});
+						data[req.session.usuario.id+'_usuarios_operadores'] = {operadores:[1,2,3,4,5,6,7,8,9,10]};
 					}
 
+					res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'operadores/operadores', data: data, usuario: req.session.usuario});
 				});
+			}).sort({'data_cadastro':-1});
+		}).sort({'data_cadastro':-1});
+	});
+
+});
+
+
+
+
+
+router.post('/alterar-usuarios-operadores', function(req, res, next) {
+	POST = req.body;
+
+	console.log('qqqqqqqqqqqqqq ESTOU NO ALTERAR USUARIOS operadores qqqqqqqqqqq');
+	console.log(POST);
+	console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq');
+
+	usuario_operadoresModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_usuarios_operadores){
+		//quer dizer que ele já escolheu alguns operadores
+		if(data_usuarios_operadores != null){
+			array_operadores = data_usuarios_operadores.operadores;
+
+			console.log('array_operadores');
+			console.log(array_operadores);
+
+			console.log('POST.checkado');
+			console.log(POST.checkado);
+			console.log(POST.checkado == true);
+
+			//quer dizer que foi marcado alguém
+			if(POST.checkado == 'true'){
+				console.log('estou no true');
+				array_operadores.push(parseInt(POST.numero_operador));
 			}else{
-				res.json({error:'repetir_senha_vazia',element:'#error_alterar_senha',texto:'*Por-favor repetir a nova senha!'});
-			}	
+				console.log('estou no false')
+				array_operadores = array_operadores.filter(item => item !== parseInt(POST.numero_operador));
+			}
+
+			console.log('array_operadores');
+			console.log(array_operadores);
+			console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+
+
+			usuario_operadoresModel.findOneAndUpdate({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},{'$set':{'operadores':array_operadores}},function(err){
+				if (err) {
+					return handleError(err);
+				}else{
+
+					res.json(data);
+				}
+			}).sort({'data_cadastro':-1});
+
+
+
+
 		}else{
-			res.json({error:'nova_senha_vazia',element:'#error_alterar_senha',texto:'*Nova senha não pode ser vazia!'});
+
 		}
 
-	}else{
-		res.json({error:'senha_atual_vazia',element:'#error_alterar_senha',texto:'*Senha atual não pode ser vazia!'});
-	}
+	});
+
+
 
 
 });
+
 
 
 

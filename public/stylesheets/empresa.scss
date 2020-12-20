@@ -150,21 +150,7 @@ $secondary-color:#202738;
 
 
 
-@media (min-width: 769px){
-  .container_login{
-    max-width: 600px;
-    min-height: 100vh;
-    z-index: 1;
-    padding: 20px;
-    margin:0 auto;
 
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-
-  }
-}
 
 
 
@@ -286,7 +272,7 @@ nav#sidebar li a:hover i{
 
 
 .conectar_box{
-  background: #2F2E41 0% 0% no-repeat padding-box;
+  background: #2F2E41;
   border-radius: 16px;
   width: 95%;
   margin: 0 auto;
@@ -350,25 +336,53 @@ nav#sidebar li a:hover i{
 
 
 
-@media (max-width: 768px){
-  .container_login {
-    width: 100%;
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
-    margin-left: auto;
+.background-primary{
+  background:#2F2E41;
+}
+
+
+.sidebar-toggle{
+  background: #fff;
+  color: #8a8d93;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  border: 1px solid #2f2e41;
+
+  &:focus{
+    outline: none;
+  }
+}
+
+.menu_box_mobile{
+  a{
+    color: #ffffff;
+  }
+  li.active>a{
+    color:#A17CFF;
   }
 
-  .text-align-center-mobile{
-    text-align:center;
+  li a i{
+    padding-right: 10px;
   }
 
-  .operador_performance_box{
-    border-left:none;
-    border-top:10px;
-  }
+
 
 }
+
+.menu_mobile{
+  display: none;
+
+  &.active{
+    display: block;
+  }
+}
+
+
+
 
 
 
@@ -555,11 +569,11 @@ nav#sidebar li a:hover i{
 }
 
 .btn-update{
-    background: #A5E50F;
-    padding: 20px;
-    width: 80%;
-    border-radius: 30px;
-    margin: 0 auto;
+  background: #A5E50F;
+  padding: 20px;
+  width: 80%;
+  border-radius: 30px;
+  margin: 0 auto;
 }
 
 .purple_background{
@@ -571,11 +585,11 @@ nav#sidebar li a:hover i{
 }
 
 .btn-update-pass{
-    background: #FDD012;
-    padding: 20px;
-    width: 80%;
-    border-radius: 30px;
-    margin: 0 auto;
+  background: #FDD012;
+  padding: 20px;
+  width: 80%;
+  border-radius: 30px;
+  margin: 0 auto;
 }
 
 .red-text{
@@ -974,4 +988,74 @@ div[data-anim~=base] {
   stroke-linecap: butt;
   stroke-miterlimit: 4;
   shape-rendering: auto;
+}
+
+
+.header-mobile{
+  min-height: 50px;
+  padding-bottom:10px;
+}
+
+
+.tabela-sinais-box .dataTables_info{
+  color: #fff;
+}
+
+
+
+@media (min-width: 769px){
+  .container_login{
+    max-width: 600px;
+    min-height: 100vh;
+    z-index: 1;
+    padding: 20px;
+    margin:0 auto;
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+
+  }
+}
+
+
+@media (max-width: 768px){
+  .container_login {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .text-align-center-mobile{
+    text-align:center;
+  }
+
+  .operador_performance_box{
+    border-left:none;
+    border-top:10px;
+  }
+
+}
+
+
+@media (max-width: 1199px){
+  .hide-mobile{
+    display: none;
+  }
+
+}
+
+
+@media (min-width: 1200px){
+  .hide-desktop{
+    display: none;
+  }
+
+  .flex-desktop{
+    display: flex;
+  }
+
 }

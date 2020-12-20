@@ -1,0 +1,48 @@
+
+
+<div class="padding-10">
+	<h5>Confirmar Envio de Lista de Sinais</h5>
+
+		<div class="margin-b-10">
+
+		Você tem certeza que deseja enviar os seguintes sinais para <strong>TODOS</strong> os usuários que estão seguindo <b> <%= data[usuario.id +'_operador_escolhido'][0].nome%> </b>?
+
+		<% if (typeof data[usuario.id +'_lista_sinais'] != 'undefined' && data[usuario.id +'_lista_sinais'].length > 0) {
+			for (var i = 0; i < data[usuario.id +'_lista_sinais'].length; i++) {%>
+			<div class="margin-t-5">
+				<%= data[usuario.id +'_lista_sinais_par'][i] %>-<%= data[usuario.id +'_lista_sinais'][i].direcao %>-<%= data[usuario.id +'_lista_sinais'][i].dia %> <%= data[usuario.id +'_lista_sinais'][i].horario %>-M<%= data[usuario.id +'_lista_sinais'][i].tempo_expiracao %>
+			</div>
+
+			<%}
+		}else{%>
+		<div class="margin-t-10">Nenhum Sinal Enviado!</div>
+		<%}%>
+
+	</div>
+
+	<form method="POST" action="" enctype="multipart/form-data">
+
+
+
+		<% if (typeof data[usuario.id +'_lista_sinais'] != 'undefined' && data[usuario.id +'_lista_sinais'].length > 0) {
+			for (var i = 0; i < data[usuario.id +'_lista_sinais'].length; i++) {%>
+			<input type="hidden" name="lista[par][]" class="data-sem-hora" value="<%= data[usuario.id +'_lista_sinais'][i].par %>">
+			<input type="hidden" name="lista[dia][]" value="<%= data[usuario.id +'_lista_sinais'][i].dia %>">
+			<input type="hidden" name="lista[horario][]" value="<%= data[usuario.id +'_lista_sinais'][i].horario %>">
+			<input type="hidden" name="lista[direcao][]" value="<%= data[usuario.id +'_lista_sinais'][i].direcao %>">
+			<input type="hidden" name="lista[tempo_expiracao][]" value="<%= data[usuario.id +'_lista_sinais'][i].tempo_expiracao %>">
+			<input type="hidden" name="lista[operador][]" value="<%= data[usuario.id +'_operador_escolhido'][0].numero %>">
+
+			<%} 
+		}%>
+
+		<div class="modal-footer">
+
+			<button class="btn btn_modal btn_modal_close margin-r-10 pointer" data-dismiss="modal">Não</button>
+
+			<button class="btn btn-primary ajax-submit" data-href="/sistema/operacional/inserir-sinal" data-dismiss="modal" data-action="/sistema/operacional">Sim</button>
+		</div>
+	</form>
+
+
+</div>

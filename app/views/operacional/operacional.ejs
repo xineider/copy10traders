@@ -3,123 +3,247 @@
 <div class="page-content">
 
 	<div class="row">
-		<div class="col-sm-12 col-md-8">
-			<div class="operacional_title margin-l-5 margin-t-10">Operacional</div>
+		<div class="col-sm-12">
+			<div class="operacional_title margin-l-5 margin-t-10">Sistema Trader</div>
 
-			<div class="card background-operacional margin-l-5">
-				<div class="sinal_container">
+			<section>
+				<div class="row">
 
-					<div class="sinal_box">
-						<div class=""> AUDUSD-CALL-10/12/2020 10:00:00-M5  						
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
+					<div class="col-sm-12 margin-b-20">
+
+						<div class="card gradient-card-5">
+							<div class="sinais_info_box text-center">
+								<div class="sinais_info_box_title bold">Sinais</div>
+
+								<div class="white-text">Sinais executados</div>
+
+								<div><span class="white-text f30 bold"><%= data[usuario.id +'_sinal_executadas'] %></span> <span class="color-success f20">Executados</span></div>
+
+								<div class="white-text margin-t-20">Sinais cadastrados</div>
+								<div><span class="color-awaiting f30 bold"><%= data[usuario.id +'_sinal_aguardando'] %></span> <span class="color-awaiting f20">Aguardando</span></div>
+							</div>
 						</div>
-					</div>
 
-					<div class="sinal_box">
-						<div class=""> AUDCAD-CALL-10/12/2020 10:00:00-M15   						
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-					</div>
-
-					<div class="sinal_box">
-						<div class=""> GBPCHF-PUT-10/12/2020 10:30:00-M5  					
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-					</div>
-
-					<div class="sinal_box">
-						<div class=""> AUDUSD-CALL-10/12/2020 10:30:00-M1  					
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-					</div>
-
-					<div class="sinal_box">
-						<div class=""> AUDUSD-PUT-10/12/2020 11:00:00-M5  					
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-					</div>
-
-					<div class="sinal_box">
-						<div class=""> EURUSD-CALL-10/12/2020 14:30:00-M15  					
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-					</div>
-
-					<div class="sinal_box">
-						<div class=""> USDCAD-PUT-10/12/2020 15:00:00-M30  					
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-					</div>
-
-					<div class="sinal_box">
-						<div class=""> NZDUSD-PUT-10/12/2020 16:00:00-M5  					
-							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
 					</div>
 
 				</div>
 
-
-				
-			</div>
+			</section>
 
 
-			<div class="card background-operacional margin-l-5 padding-0">
+			<section class="margin-bottom-sm">
 
-				<div class="row no-gutters">
-					<div class="col-sm-10 margin-t-30 margin-b-30">
-						<div class="exemplo-padrao-sinal">PADRÃO: PAR-DIREÇÃO-DATA E HORÁRIO-TEMPO GRÁFICO</div>				
+				<div class="exemplo-padrao-sinal">PADRÃO: PAR-DIREÇÃO-DATA E HORÁRIO-TEMPO GRÁFICO</div>
+				<div class="exemplo-padrao-sinal text-center margin-b-20">AUDUSD-CALL-<%= data[usuario.id +'_dia_amanha'] %> 19:50:00-M5</div>
+
+			</section>
+
+
+			<section class="margin-bottom-sm margin-top-sm">
+				<div class="row">
+					<% if (typeof data[usuario.id +'_operadores'] != 'undefined' && data[usuario.id +'_operadores'].length > 0) {
+						for (var i = 0; i < data[usuario.id +'_operadores'].length; i++) {%>
+
+						<div class="col-sm-12 col-md-6 margin-b-20">
+							<div class="card h-100 gradient-card-1 color-blue card-small">
+								<div class="row">
+									<div class="operador_foto text-center mx-auto">
+										<img src="/public/images/operadores/trader<%=data[usuario.id +'_operadores'][i].numero %>.png">
+										<div class="operador_nome"><%= data[usuario.id +'_operadores'][i].nome %></div>
+									</div>
+
+								</div>
+
+								<form method="POST" action="" enctype="multipart/form-data">
+									<div class="row">
+										<div class="col-sm-12 enviar_sinal_container">
+											<textarea name="lista_sinais"  class="form-control" placeholder="Insira aqui o Sinal ou Lista de sinais conforme padrão... AUDUSD-CALL-19:50:00-M5"></textarea>
+										</div>
+										<div class="col-sm-12 margin-t-10">
+
+											<button type="button" data-action="/sistema/operacional" data-href="/sistema/operacional/popup-confirmacao-enviar-lista/<%= data[usuario.id +'_operadores'][i].numero %>" class="btn inserir_lista_sinal ajax-submit-open-modal" data-action="/sistema/operacional" data-modal='#modalinfo'>Inserir</button>
+
+
+										</div>
+
+										<div class="col-sm-12 text-center margin-t-10">
+											<div class="block-body error-block" id="error_mensagem_lista_sinais_<%= data[usuario.id +'_operadores'][i].numero %>"></div>
+										</div>
+
+									</div>
+								</form>
+
+								<div class="row">
+									<div class="mx-auto tabela-sinais-box">
+										<table class="table centered highlight responsive-table cell-border tabela_filtrada" id="">
+											<thead>
+												<tr>
+													<th>Sinal</th>
+													<th>Remover</th>
+												</tr>
+											</thead>
+
+											<tbody>
+												<form method="POST" action="" enctype="multipart/form-data">
+
+													<% if (typeof data[usuario.id +'_sinal'] != 'undefined' && data[usuario.id +'_sinal'].length > 0) {
+														for (var j = 0; j < data[usuario.id +'_sinal'].length; j++) {%>
+
+														<%if(data[usuario.id +'_sinal'][j].operador == data[usuario.id +'_operadores'][i].numero){%>
+
+														<tr>
+															<td class="<%= data[usuario.id +'_sinal'][j].executada == true ? 'text-decoration-line-meio' : ''%>">
+																<%= data[usuario.id +'_sinal_par'][j] %>-<%= data[usuario.id +'_sinal_direcao'][j] %>-<%= data[usuario.id +'_sinal_horario'][j] %>-M<%= data[usuario.id +'_sinal'][j].tempo_expiracao %>
+															</td>
+															<td class="text-center">
+																<button type="button" data-href="/sistema/operacional/popup-confirmacao-remover-sinal/<%= data[usuario.id +'_sinal'][j]._id %>/<%= data[usuario.id +'_operadores'][i].numero%>" class="btn btn-primary ajax-submit-open-modal <%= data[usuario.id +'_sinal'][j].executada == true ? 'none' : ''%>" data-modal="#modalinfo">
+																	<span aria-hidden="true">&times;</span>
+																</button>
+															</td>
+														</tr>
+
+														<%}%>
+
+														<%
+													}
+												} %>
+
+											</form>
+										</tbody>
+									</table>
+								</div>
+
+							</div>
 
 
 
-						<div class="enviar_sinal_container margin-r-30 margin-l-30">
-							<textarea class="form-control" placeholder="Insira aqui o Sinal ou Lista de sinais conforme padrão... AUDUSD-CALL-19:50:00-M5"></textarea>
 						</div>
 
-						<div class="color-blue-light text-center">Este é o Padrão do sinal Exemplo: AUDUSD-CALL-10/12/2020 19:50:00-M5</div>
 					</div>
 
-					<div class="offset-sm-1 col-sm-1">
-						<button class="inserir_lista_sinal">Inserir</button>
-					</div>
 
-				</div>
 
+					<%}
+				}%>
 
 			</div>
 
-		</div>
+		</section>
 
-		<div class="col-md-4">
-			<div class="card gradient-card-5">
-				<div class="sinais_info_box">
-					<div class="sinais_info_box_title bold">Sinais</div>
+	</div>
 
-					<div class="white-text">Sinais executados</div>
+</div>
 
-					<div><span class="white-text f30 bold">173</span> <span class="color-success f20">Executados</span></div>
+</div>
 
-					<div class="white-text margin-t-20">Sinais cadastrados</div>
-					<div><span class="color-awaiting f30 bold">1200</span> <span class="color-awaiting f20">Aguardando</span></div>
+
+
+
+
+
+<!-- 		<div class="card background-operacional margin-l-5">
+			<div class="sinal_container">
+
+				<div class="sinal_box">
+					<div class=""> AUDUSD-CALL-10/12/2020 10:00:00-M5  						
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
 				</div>
+
+				<div class="sinal_box">
+					<div class=""> AUDCAD-CALL-10/12/2020 10:00:00-M15   						
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+				</div>
+
+				<div class="sinal_box">
+					<div class=""> GBPCHF-PUT-10/12/2020 10:30:00-M5  					
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+				</div>
+
+				<div class="sinal_box">
+					<div class=""> AUDUSD-CALL-10/12/2020 10:30:00-M1  					
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+				</div>
+
+				<div class="sinal_box">
+					<div class=""> AUDUSD-PUT-10/12/2020 11:00:00-M5  					
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+				</div>
+
+				<div class="sinal_box">
+					<div class=""> EURUSD-CALL-10/12/2020 14:30:00-M15  					
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+				</div>
+
+				<div class="sinal_box">
+					<div class=""> USDCAD-PUT-10/12/2020 15:00:00-M30  					
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+				</div>
+
+				<div class="sinal_box">
+					<div class=""> NZDUSD-PUT-10/12/2020 16:00:00-M5  					
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+				</div>
+
 			</div>
 
+
+
+		</div> -->
+
+
+<!-- 		<div class="card background-operacional margin-l-5 padding-0">
+
+			<div class="row no-gutters">
+				<div class="col-sm-10 margin-t-30 margin-b-30">
+					<div class="exemplo-padrao-sinal">PADRÃO: PAR-DIREÇÃO-DATA E HORÁRIO-TEMPO GRÁFICO</div>				
+
+
+
+					<div class="enviar_sinal_container margin-r-30 margin-l-30">
+						<textarea class="form-control" placeholder="Insira aqui o Sinal ou Lista de sinais conforme padrão... AUDUSD-CALL-19:50:00-M5"></textarea>
+					</div>
+
+					<div class="color-blue-light text-center">Este é o Padrão do sinal Exemplo: AUDUSD-CALL-10/12/2020 19:50:00-M5</div>
+				</div>
+
+				<div class="offset-sm-1 col-sm-1">
+					<button class="inserir_lista_sinal">Inserir</button>
+				</div>
+
+			</div>
+
+
+		</div> -->
+
+		<!-- 	</div> -->
+
+		<!-- 	<div class="col-md-4"> -->
+
+<!-- 
 			<div class="card gradient-card-5">
 				<div class="configurar_operacional_trader_box">
 					<div class="sinais_info_box_title bold">Operacional</div>
@@ -150,38 +274,30 @@
 
 				</div>
 			</div>
-
-			<div class="card purple_background">
-				<div class="alterar_senha_box">
-					<div class="color-grey f25">
-						Alterar Senha de acesso desse sistema						
-					</div>
-					<form>
-						<div class="form-group">
-							<input type="password" class="form-control" name="valor_entrada" placeholder="Senha Antiga" >
-						</div>
-						<div class="form-group">
-							<input type="password" class="form-control" name="nova_senha" placeholder="Nova Senha">
-						</form>
-
-						<div class="w100 text-center margin-t-20">
-							<button class="btn btn-update-pass">Alterar Senha</button>
-						</div>
-
-					</div>
+		-->
+<!-- 		<div class="card purple_background">
+			<div class="alterar_senha_box">
+				<div class="color-grey f25">
+					Alterar Senha de acesso desse sistema						
 				</div>
+				<form>
+					<div class="form-group">
+						<input type="password" class="form-control" name="valor_entrada" placeholder="Senha Antiga" >
+					</div>
+					<div class="form-group">
+						<input type="password" class="form-control" name="nova_senha" placeholder="Nova Senha">
+					</form>
 
+					<div class="w100 text-center margin-t-20">
+						<button class="btn btn-update-pass">Alterar Senha</button>
+					</div>
 
-
+				</div>
 			</div>
+		-->
 
 
-
-		</div>
-
-
-
-	</div>
+		<!-- 		</div> -->
 
 
 
