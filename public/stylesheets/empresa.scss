@@ -1059,3 +1059,53 @@ div[data-anim~=base] {
   }
 
 }
+
+
+
+.box_operadores_overflow{
+  height: 170px;
+  background:#fffc;
+  border-radius: 30px 30px 0 0;
+}
+
+.box_operadores_scroller{
+  height: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.box_operador_dashboard{
+  height: 100%;
+  display: inline-block;
+  width: 200px;
+  border-right: 1px solid #ccc;
+  padding: 10px;
+
+  img{
+    width: 80px;
+    height: 80px;
+  }
+
+}
+
+.box_operadores_scroller .box_operador_dashboard:last-child{
+  border-right:0;
+}
+
+.btn-yellow{
+  background:#ffa726;
+  color: #fff;
+
+  &:hover{
+    background: #e8961d;
+  }
+}
+
+.btn-alterar-conta-conexao{
+  width: 100%;
+  border-radius: 30px;
+}
+
+.yellow-text{
+  color:#ffa726;
+}

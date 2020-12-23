@@ -21,6 +21,8 @@ const teste_conexaoModel = require('../model/conexaoTesteModel.js');
 
 const usuario_operadoresModel = require('../model/usuariosOperadoresModel.js');
 
+const sinalModel = require('../model/listaSinaisModel.js');
+
 router.get('/', function(req, res, next) {
 	data.link_sistema = '/sistema';
 
@@ -51,13 +53,89 @@ router.get('/', function(req, res, next) {
 				usuario_operadoresModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_usuarios_operadores){
 					console.log('data_usuarios_operadores');
 					console.log(data_usuarios_operadores);
+
 					if(data_usuarios_operadores != null){
 						data[req.session.usuario.id+'_usuarios_operadores'] = data_usuarios_operadores;
 					}else{
-						data[req.session.usuario.id+'_usuarios_operadores'] = {operadores:[1,2,3,4,5,6,7,8,9,10]};
+						data[req.session.usuario.id+'_usuarios_operadores'] = {operadores:[]};
 					}
+					sinalModel.find({'deletado':0},function(err,data_sinal){
 
-					res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'operadores/operadores', data: data, usuario: req.session.usuario});
+						var c_operador1 = 0;
+						var c_operador2 = 0;
+						var c_operador3 = 0;
+						var c_operador4 = 0;
+						var c_operador5 = 0;
+						var c_operador6 = 0;
+						var c_operador7 = 0;
+						var c_operador8 = 0;
+						var c_operador9 = 0;
+						var c_operador10 = 0;
+
+
+						if(data_sinal.length > 0){
+							for(i=0;i<data_sinal.length;i++){
+
+								if(data_sinal[i].operador == 1){
+									c_operador1++;
+								}
+								if(data_sinal[i].operador == 2){
+									c_operador2++;
+								}
+
+								if(data_sinal[i].operador == 3){
+									c_operador3++;
+								}
+
+								if(data_sinal[i].operador == 4){
+									c_operador4++;
+								}
+
+								if(data_sinal[i].operador == 5){
+									c_operador5++;
+								}
+
+								if(data_sinal[i].operador == 6){
+									c_operador6++;
+								}
+
+								if(data_sinal[i].operador == 7){
+									c_operador7++;
+								}
+
+								if(data_sinal[i].operador == 8){
+									c_operador8++;
+								}
+
+								if(data_sinal[i].operador == 9){
+									c_operador9++;
+								}
+
+								if(data_sinal[i].operador == 10){
+									c_operador10++;
+								}
+
+								console.log('data_sinal[i].operador: ' + data_sinal[i].operador);
+
+								console.log('--------------------------');
+							}
+
+						}
+
+						var quantidade_operacoes = [c_operador1,c_operador2,c_operador3,c_operador4,c_operador5,
+						c_operador6,c_operador7,c_operador8,c_operador9,c_operador10];
+
+
+						console.log('c_operador1:' + c_operador1);
+						console.log('quantidade_operacoes: ' + quantidade_operacoes);
+
+						data[req.session.usuario.id+'_qtd_operacoes'] = quantidade_operacoes;
+					
+
+
+
+						res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'operadores/operadores', data: data, usuario: req.session.usuario});
+					});
 				});
 			}).sort({'data_cadastro':-1});
 		}).sort({'data_cadastro':-1});

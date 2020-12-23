@@ -1,4 +1,6 @@
+
 <%- include('../includes/menu_header'); %>
+<%if(usuario.nivel == 2){%>
 
 <div class="page-content">
 
@@ -136,6 +138,15 @@
 
 </div>
 
+
+<%}else{%>
+<div class="page-content">
+	<div class="card gradient-card-1">
+		Você não possui acesso para acessar essa página!!!
+	</div>
+</div>
+
+<%}%>
 
 
 

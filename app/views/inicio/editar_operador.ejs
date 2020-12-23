@@ -1,0 +1,33 @@
+<%if(usuario.nivel == 2){%>
+
+<div class="white padding-5 margin-t-10">
+	<form method="POST" action="/">
+		<div class="form-group">
+			<label>Nome</label>
+			<input type="text" name="nome" class="input-material" placeholder="Nome " value="<%= data[usuario.id +'_operador_editar'].nome %>">									
+		</div>
+		<div class="form-group">
+			<label>Performance</label>
+			<input type="number" name="performance" class="input-material"  value="<%= data[usuario.id +'_operador_editar'].performance %>">	
+		</div>
+
+		<div class="form-group">
+			<label>País</label>
+			<input type="text" name="pais" class="input-material"  value="<%= data[usuario.id +'_operador_editar'].pais %>">	
+		</div>
+
+		<input type="hidden" name="_id" value="<%= data[usuario.id +'_operador_editar']._id %>">
+
+		<button class="btn btn-primary ajax-submit" data-href="/sistema/atualizar-operador/" data-action="/sistema/">
+			Atualizar Operador
+		</button>
+	</form>
+
+</div>
+
+
+
+
+
+
+<%}%>

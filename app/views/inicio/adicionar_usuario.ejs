@@ -1,0 +1,31 @@
+<%if(usuario.nivel == 2){%>
+
+<div class="white padding-5 margin-t-10">
+	<div class="">Adicionar Usuário!</div>
+
+
+	<form method="POST" action="/">
+		<div class="form-group">
+			<input type="text" name="nome" class="input-material" placeholder="Nome ">									
+		</div>
+		<div class="form-group">
+			<input type="email" name="email" class="input-material" placeholder="E-mail ">									
+		</div>
+		<div class="form-group">
+			<label>Data Licença</label>
+			<input type="date" name="data_fim" class="input-material" placeholder="Licença">									
+		</div>
+
+		<button class="btn btn-primary ajax-submit" data-href="/sistema/cadastrar-usuario/">
+			Cadastrar Usuário
+		</button>
+	</form>
+
+</div>
+
+
+
+
+
+
+<%}%>

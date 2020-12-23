@@ -14,19 +14,17 @@
 					<a class="ajax-load" href="/sistema"> <i class="fas fa-home"></i>Home </a>
 				</li>
 
+				<%if(usuario.nivel == 2){%>
+				
 				<li class="<%= data[usuario.id + '_numero_menu'] == 2 ? 'active' : ''%>" >
 					<a class="ajax-load" href="/sistema/operacional"> <i class="fas fa-cog"></i>Operacional </a>
 				</li>
 
+				<%}%>
+
 				<li class="<%= data[usuario.id + '_numero_menu'] == 3 ? 'active' : ''%>">
 					<a class="ajax-load" href="/sistema/operadores"> <i class="fas fa-user"></i>Operadores Globais </a>
 				</li>
-
-
-				<% if(usuario.nivel == 2){%>
-
-
-				<%}%>
 
 				<li><a class="logout" href="/logout" onclick="return confirm('Você deseja sair?');"> <i class="icon-logout"></i>Sair </a></li>
 
@@ -53,19 +51,17 @@
 			<a class="ajax-load" href="/sistema"> <i class="fas fa-home"></i>Home </a>
 		</li>
 
+		<%if(usuario.nivel == 2){%>
+
 		<li class="<%= data[usuario.id + '_numero_menu'] == 2 ? 'active' : ''%>" >
 			<a class="ajax-load" href="/sistema/operacional"> <i class="fas fa-cog"></i>Operacional </a>
 		</li>
 
+		<%}%>
+
 		<li class="<%= data[usuario.id + '_numero_menu'] == 3 ? 'active' : ''%>">
 			<a class="ajax-load" href="/sistema/operadores"> <i class="fas fa-user"></i>Operadores Globais </a>
 		</li>
-
-
-		<% if(usuario.nivel == 2){%>
-
-
-		<%}%>
 
 		<li><a class="logout" href="/logout" onclick="return confirm('Você deseja sair?');"> <i class="icon-logout"></i>Sair </a></li>
 
@@ -76,73 +72,67 @@
 
 
 	<div class="conectar_box white-text hide-mobile">
+
+		<% if (data[usuario.id +'_conexao'].status == 'primeira_vez' || data[usuario.id +'_conexao'].status == 'erro de conexao' ){%>
+
 		Olá <strong>Usuário</strong>, Conecte sua conta da corretora para começar!
 
-		<%if(data[usuario.id +'_conexao'].status == 'conectado' || data[usuario.id +'_conexao'].status == ''){%>
-		<div class="block-body">
-
-			<div class="form-group">
-				<%if(data[usuario.id +'_conexao'].status == 'conectado'){%>
-				<label class="form-control-label dashtext-2">Conta verificada Como:</label>
-				<%}else{%>
-				<label class="form-control-label dashtext-5">Testando Conta Como:</label>
-				<%}%>
-				<input type="email" class="form-control" name="email" disabled value="<%= data[usuario.id +'_conexao'].email%>">
-			</div>
-
-			<div class="form-group"> 
-
-				<button type="button" <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : '' %> data-href="/sistema/popup-confirmacao-alterar-testar-conexao" class="btn <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : 'btn-primary' %> ajax-submit-open-modal" data-modal='#modalinfo'>Alterar Conta</button>
-
-			</div>
-
+		<%if(data[usuario.id +'_conexao'].status == 'erro de conexao'){ %>
+		<div class="red-text margin-b-10">
+			* <b>Usuário</b> ou <b>senha</b> não conferem com a da plataforma!
 		</div>
-
-		<div class="block-body">
-			<% if(data[usuario.id +'_conexao'].status == 'conectado' && data[usuario.id +'_conta'].acao != 'iniciar'){%>
-			<div class="alert sucess-block fade show justify" id="caixa_alert_conectado">
-				Conta testada com <b>sucesso!</b> Por-favor clique no botão <b>"Conectar"</b> para iniciar a operação.Após confirmar o seu operacional.
-			</div>
-
-			<%}else if(data[usuario.id +'_conexao'].status == ''){%>
-			<div class="alert warning-block fade show" id="caixa_alert_conectado justify">
-				Não se preocupe, a sua conta ainda está sendo testada, tentando novamente em <span class="timer_header_container">
-					<span class="timer_header">59</span>'s
-				</span>
-
-				<div class="text-center margin-t-10">
-					<i class="fas fa-spinner fa-pulse fa-fw"></i>
-					Testando conexão ...
-				</div>
-			</div>
-
-			<% } %>
-		</div>
-
-
-		<%}else{%>
+		<%}%>
 
 		<%- include('../inicio/testar_conexao_form')%>
 
+		<% } %>
 
 
+		<% if(data[usuario.id +'_conexao'].status == 'conectado'){ %>
+
+		<div class="container_teste_conexao">
+			<div class="block-body">
+				Sua conta está conectada como:
+
+				<div class="green-text">
+					<%= data[usuario.id +'_conexao'].email%>
+				</div>
+
+			</div>
+
+			<div class="form-group margin-t-10"> 
+
+				<button type="button" <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : '' %> data-href="/sistema/popup-confirmacao-alterar-testar-conexao" class="btn <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : 'btn-yellow' %> ajax-submit-open-modal btn-alterar-conta-conexao" data-modal='#modalinfo'>Mudar Conta</button>
+
+			</div>
+		</div>
+
+		<% } %>
+
+		<% if(data[usuario.id +'_conexao'].status == ''){ %>
+
+		<div class="container_teste_conexao">
+
+
+			<div class="text-center">Não se preocupe!</div>
+			<div>
+				Sua conta está sendo testada como: <strong class="yellow-text"><%= data[usuario.id +'_conexao'].email%></strong>
+			</div>
+
+			<div>	
+				Tentando novamente em <span class="timer_header_container">
+					<span class="timer_header">59</span>'s
+				</span>
+			</div>
+
+			<div class="margin-t-10">
+				<div class="yellow-text margin-b-10">Se preferir pode alterar a conta também!</div>
+
+				<button type="button" <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : '' %> data-href="/sistema/popup-confirmacao-alterar-testar-conexao" class="btn <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : 'btn-yellow' %> ajax-submit-open-modal btn-alterar-conta-conexao" data-modal='#modalinfo'>Mudar Conta</button>
+			</div>
+		</div>
 
 		<%}%>
-
-		<div class="block-body">
-			<% if(data[usuario.id +'_conexao'].status == 'erro de conexao'){%>
-			<div class="alert error-block fade show justify" id="caixa_alert_conectado">
-				<b>Usuário</b> ou <b>senha</b> não conferem com a da plataforma! Por-favor verifique os seus dados, e teste a conexão novamente.
-			</div>
-
-			<%}else if(data[usuario.id +'_conexao'].status == 'primeira_vez'){%>
-			<div class="alert transparent-block justify margin-t-10">
-				Para poder utilizar o sistema, informe nos campos acima os dados da corretora e clique no botão testar conexão! 
-			</div>
-
-			<%}%>
-
-		</div>
 
 
 	</div>
@@ -161,6 +151,19 @@
 	</div>
 
 </nav>
+
+
+<script type="text/javascript">
+	<% if( data[usuario.id +'_conta'].acao == 'iniciar' || data[usuario.id +'_conexao'].status == ''){ %>
+	zerarIntervalo();
+	setarPararTimer();
+	timer60sec();
+
+
+	<%}%>
+
+</script>
+
 
 
 

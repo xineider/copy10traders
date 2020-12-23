@@ -4,46 +4,95 @@
 <div class="page-content">
 
 	
+
 	<section class="margin-bottom-sm margin-top-sm hide-desktop">
-		<div class="row">
-			<div class="conectar_box white-text">
-				Olá <strong>Usuário</strong>, Conecte sua conta da corretora para começar!
+		<div class="conectar_box white-text">
 
-				<form method="POST" action="/">
-					<div class="form-group">
-						<input id="login-username" type="email" name="email" required data-msg="Por-favor digite o seu e-mail" class="input-material" placeholder="Email acesso da plataforma ">									
-					</div>
-					<div class="form-group">
-						<input id="login-password" type="password" name="senha" required data-msg="Por-favor digite sua senha" class="input-material" placeholder="Senha acesso da plataforma">										
-					</div>
+			<% if (data[usuario.id +'_conexao'].status == 'primeira_vez' || data[usuario.id +'_conexao'].status == 'erro de conexao' ){%>
 
-					<button class="btn btn-testar-conexao">
-						Teste de Conexão
-					</button>
-				</form>
+			Olá <strong>Usuário</strong>, Conecte sua conta da corretora para começar!
 
-
+			<%if(data[usuario.id +'_conexao'].status == 'erro de conexao'){ %>
+			<div class="red-text margin-b-10">
+				* <b>Usuário</b> ou <b>senha</b> não conferem com a da plataforma!
 			</div>
+			<%}%>
+
+			<%- include('../inicio/testar_conexao_form')%>
+
+			<% } %>
+
+
+			<% if(data[usuario.id +'_conexao'].status == 'conectado'){ %>
+
+			<div class="container_teste_conexao">
+				<div class="block-body">
+					Sua conta está conectada como:
+
+					<div class="green-text">
+						<%= data[usuario.id +'_conexao'].email%>
+					</div>
+
+				</div>
+
+				<div class="form-group margin-t-10"> 
+
+					<button type="button" <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : '' %> data-href="/sistema/popup-confirmacao-alterar-testar-conexao" class="btn <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : 'btn-yellow' %> ajax-submit-open-modal btn-alterar-conta-conexao" data-modal='#modalinfo'>Mudar Conta</button>
+
+				</div>
+			</div>
+
+			<% } %>
+
+			<% if(data[usuario.id +'_conexao'].status == ''){ %>
+
+			<div class="container_teste_conexao">
+
+
+				<div class="text-center">Não se preocupe!</div>
+				<div>
+					Sua conta está sendo testada como: <strong class="yellow-text"><%= data[usuario.id +'_conexao'].email%></strong>
+				</div>
+
+				<div>	
+					Tentando novamente em <span class="timer_header_container">
+						<span class="timer_header">59</span>'s
+					</span>
+				</div>
+
+				<div class="margin-t-10">
+					<div class="yellow-text margin-b-10">Se preferir pode alterar a conta também!</div>
+
+					<button type="button" <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : '' %> data-href="/sistema/popup-confirmacao-alterar-testar-conexao" class="btn <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : 'btn-yellow' %> ajax-submit-open-modal btn-alterar-conta-conexao" data-modal='#modalinfo'>Mudar Conta</button>
+				</div>
+			</div>
+
+			<%}%>
+
+
 		</div>
+
+
+
 	</section>
 
 
 
 
 
+	<form>
 
 
+		<section class="margin-bottom-sm margin-top-sm">
+			<div class="row">
+				<div class="col-sm-12 col-md-5 margin-b-20">
+					<div class="card h-100 gradient-card-1">
+						<div class="card-body">
+							<div class="operacional_dashboard">
+								<h5 class="card-title">Operacional</h5>
+								<div class="red-text bold">Defina seu operacional e depois inicie o sistema!</div>
 
-	<section class="margin-bottom-sm margin-top-sm">
-		<div class="row">
-			<div class="col-sm-12 col-md-5">
-				<div class="card h-100 gradient-card-1">
-					<div class="card-body">
-						<div class="operacional_dashboard">
-							<h5 class="card-title">Operacional</h5>
-							<div class="red-text bold">Defina seu operacional e depois inicie o sistema!</div>
 
-							<form>
 								<div class="form-group">
 									<div for="valor_entrada" class="white-text">Valor de Entrada</div>
 									<input type="number" class="form-control" id="valor_entrada" name="valor_entrada" value="<%= data[usuario.id +'_conta'].valor_entrada%>">
@@ -60,62 +109,99 @@
 
 								<div class="red-text bold text-center">Se você não ativar a conta real, seu sistema de teste fica no modo conta de treinamento!</div>
 
-								<% if(data[usuario.id +'_conta'].acao == 'parar' || data[usuario.id +'_conta'].status == 'desconectado'){ %>
-
-								<button type="button" <%= (data[usuario.id +'_conexao'].email == '' && data[usuario.id +'_conexao'].senha == '') || (data[usuario.id +'_conexao'].status != 'conectado') ? 'disabled' : '' %> data-href="/sistema/popup-confirmacao-iniciar-operacao/" id="botao_iniciar_sistema" class="btn <%= (data[usuario.id +'_conexao'].email == '' && data[usuario.id +'_conexao'].senha == '') || (data[usuario.id +'_conexao'].status != 'conectado')  ? 'disabled' : 'btn_iniciar_sistema' %>  margin-t-10 margin-b-10 ajax-submit-open-modal" title="Para Iniciar o Sistema, Teste a conexão antes!" data-modal='#modalinfo'>Iniciar Sistema</button>
-
-
-								<%}else {%>
-								<button type="button" id="botao_parar_sistema" data-href="/sistema/popup-confirmacao-parar-operacao/" class="btn btn-danger btn-block margin-t-10 margin-b-10 ajax-submit-open-modal" title="Parar Sistema" data-conect_teste='desconectar' data-modal='#modalinfo'>Parar Sistema</button>
-								<% }%>
-
-
-							</form>
-
-							<div class="block-body error-block" id="error_mensagem_conexao"></div>
-
-						</div>
 
 
 
-					</div>
-				</div>
-			</div>
-			<div class="col-sm-12 col-md-7">
-				<div class="card h-100 gradient-card-2">
-					<div class="card-body">
-						<h5 class="card-title">Visão da Conta</h5>
+								<div class="block-body error-block" id="error_mensagem_conexao"></div>
 
-						<div class="row margin-t-20 h70">
-							<div class="col-sm-12 col-md-4">
-								<div class="numero_operacoes_dashboard"><%= data[usuario.id +'_entrada_nro_operacoes']%></div>
-								<div class="label_numero_operacoes_dashboard">Operações</div>
-							</div>
-							<div class="col-sm-12 col-md-6">
-								<div class="performance_box h100">
-									<div class="performance_dashboard">80%
 
-										<div class="circle_performance">
-											<div class="wrapper" data-anim="base wrapper">
-												<div class="circle" data-anim="base left"></div>
-												<div class="circle" data-anim="base right"></div>
-											</div>
+
+								<div class="block-body text-center">
+									<strong class="white-text">Selecione os Operadores!</strong>
+									<div class="white-text">Deslize para o lado para ver todos!</div>
+
+									<div class="w100 box_operadores_overflow">
+										<div class="box_operadores_scroller">
+											<% if (typeof data[usuario.id +'_operadores'] != 'undefined' && data[usuario.id +'_operadores'].length > 0) {
+												for (var i = 0; i < data[usuario.id +'_operadores'].length; i++) {%>
+
+												<div class="box_operador_dashboard">
+													<div>
+														<a class="ajax-load" href="/sistema/operadores">
+															<img src="/public/images/operadores/trader<%=data[usuario.id +'_operadores'][i].numero %>.png">															
+														</a>
+													</div>
+													<div>
+														<a class="ajax-load" href="/sistema/operadores">
+															<span class="operador_nome text-center"><%= data[usuario.id +'_operadores'][i].nome %></span>
+														</a>
+													</div>
+													<div class="custom-control custom-switch ">
+														<input type="checkbox" class="custom-control-input copiar_este_trader" id="copiar_trader_<%= data[usuario.id +'_operadores'][i].numero%>" value="<%= data[usuario.id +'_operadores'][i].numero%>" <%= data[usuario.id +'_usuarios_operadores'].operadores.includes(data[usuario.id +'_operadores'][i].numero) == true ? 'checked' : '' %> >
+														<label class="custom-control-label" for="copiar_trader_<%= data[usuario.id +'_operadores'][i].numero%>">Copiar este Trader</label>
+													</div>
+												</div>
+
+												<%}
+											}%>
 										</div>
-
 									</div>
-									
+
+
 								</div>
 
 							</div>
-						</div>
 
+
+
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-12 col-md-7 margin-b-20">
+					<div class="card h-100 gradient-card-2">
+						<div class="card-body">
+							<h5 class="card-title">Visão da Conta</h5>
+
+							<div class="row margin-t-20 h70">
+								<div class="col-sm-12 col-md-4">
+									<div class="numero_operacoes_dashboard"><%= data[usuario.id +'_entrada_nro_operacoes']%></div>
+									<div class="label_numero_operacoes_dashboard">Operações</div>
+								</div>
+								<div class="col-sm-12 col-md-6">
+									<div class="performance_box h100">
+										<div class="performance_dashboard">
+
+											<div>
+												<canvas id="grafico_historico" ></canvas>
+											</div>
+
+										</div>
+
+									</div>
+
+								</div>
+
+								<div class="col-sm-12">
+									<% if(data[usuario.id +'_conta'].acao == 'parar' || data[usuario.id +'_conta'].status == 'desconectado'){ %>
+
+									<button type="button" <%= (data[usuario.id +'_conexao'].email == '' && data[usuario.id +'_conexao'].senha == '') || (data[usuario.id +'_conexao'].status != 'conectado') ? 'disabled' : '' %> data-href="/sistema/popup-confirmacao-iniciar-operacao/" id="botao_iniciar_sistema" class="btn <%= (data[usuario.id +'_conexao'].email == '' && data[usuario.id +'_conexao'].senha == '') || (data[usuario.id +'_conexao'].status != 'conectado')  ? 'disabled' : 'btn_iniciar_sistema' %> btn-block margin-t-10 margin-b-10 ajax-submit-open-modal" title="Para Iniciar o Sistema, Teste a conexão antes!" data-modal='#modalinfo'>Iniciar Sistema</button>
+
+
+									<%}else {%>
+									<button type="button" id="botao_parar_sistema" data-href="/sistema/popup-confirmacao-parar-operacao/" class="btn btn-danger btn-block margin-t-10 margin-b-10 ajax-submit-open-modal" title="Parar Sistema" data-conect_teste='desconectar' data-modal='#modalinfo'>Parar Sistema</button>
+									<% }%>
+								</div>
+							</div>
+
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	</section>
+		</section>
 
-	<section class="no-padding-bottom margin-top-sm">
+	</form>
+
+	<section class="no-padding-bottom">
 		<div class="row">
 
 			<div class="col-sm-12">
@@ -211,3 +297,76 @@
 
 
 </div>
+
+
+<!-- <script src="/public/javascripts/progressbar.min.js"></script>
+
+<script type="text/javascript">
+
+	var circle = new ProgressBar.Circle('#progress', {
+		color: '#FCB03C',
+		strokeWidth: 3,
+		trailWidth: 1,
+		text: {
+			value: 36
+		}
+	});
+
+
+</script> -->
+
+
+<script>
+
+
+	Chart.defaults.global.defaultFontSize = 16;
+	var canvas = document.getElementById("grafico_historico");
+	var ctx = canvas.getContext('2d');
+
+
+
+
+	var data = {
+		datasets: [
+		{
+			backgroundColor: ['#1221d6','#beb6ed'],
+			data: [<%= data[usuario.id +'_entrada_acertos'] %>, <%= data[usuario.id +'_entrada_falha'] %>],
+			label:'Operações',
+			borderWidth: 0
+		}
+		],labels: [
+		'Acertos',
+		'Falhas'
+		]
+	};
+
+	var options = {
+		legend:{
+			display:false
+		},
+		segmentShowStroke: false,
+		responsive:true
+	}
+
+
+
+
+
+	var myBarChart = new Chart(ctx, {
+		type: 'pie',
+		data: data,
+		options:options
+	});
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
