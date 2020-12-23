@@ -281,6 +281,35 @@ $(document).ready(function () {
 	});
 
 
+	$(document).on('change','#tipo_conta',function(e){
+		e.preventDefault();
+
+		var checkado = false;
+		console.log('oiiii')
+
+		if($(this).is(':checked')){
+			checkado = true;
+		}
+
+		console.log('checkado:' + checkado);
+
+		if(checkado == true){
+			console.log('estou aqui');
+			$('.label_tipo_conta_change').text('Conta Real Ativada');
+			$('.label_tipo_conta_change').removeClass('color-awaiting');
+			$('.label_tipo_conta_change').addClass('blue-text');
+		}else{
+			$('.label_tipo_conta_change').text('Ativar Conta Real');
+			$('.label_tipo_conta_change').addClass('color-awaiting');
+			$('.label_tipo_conta_change').removeClass('blue-text');
+		}
+
+
+	});
+
+
+
+
 
 	$(document).on('change','.copiar_este_trader',function(e){
 		e.preventDefault();
@@ -293,6 +322,17 @@ $(document).ready(function () {
 
 		if($(this).is(':checked')){
 			checkado = true;
+		}
+
+		var label = '.label_switch_copiar_' + $(this).val();
+		console.log('label:' + label);
+
+		if(checkado == true){
+			$(label).addClass('blue-text');
+			$(label).text('Copiando Trader');
+		}else{
+			$(label).removeClass('blue-text');
+			$(label).text('Copiar este Trader');
 		}
 
 		var array_valores = [

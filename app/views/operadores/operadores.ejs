@@ -44,15 +44,27 @@
 							</div>
 						</div>
 
+
+						<% if(usuario.nivel == 3){ %>
 						<div class="row">
 							<div class="col-sm-12">
 								<div class="custom-control custom-switch ">
 									<input type="checkbox" class="custom-control-input copiar_este_trader" id="copiar_trader_<%= data[usuario.id +'_operadores'][i].numero%>" value="<%= data[usuario.id +'_operadores'][i].numero%>" <%= data[usuario.id +'_usuarios_operadores'].operadores.includes(data[usuario.id +'_operadores'][i].numero) == true ? 'checked' : '' %> >
-									<label class="custom-control-label" for="copiar_trader_<%= data[usuario.id +'_operadores'][i].numero%>">Copiar este Trader</label>
+									
+									<% if(data[usuario.id +'_usuarios_operadores'].operadores.includes(data[usuario.id +'_operadores'][i].numero) == true){ %>
+
+									<label class="custom-control-label label_switch_copiar_<%= data[usuario.id +'_operadores'][i].numero%>" for="copiar_trader_<%= data[usuario.id +'_operadores'][i].numero%>">Copiando Trader</label>
+
+									<%}else{%>
+									<label class="custom-control-label label_switch_copiar_<%= data[usuario.id +'_operadores'][i].numero%>" for="copiar_trader_<%= data[usuario.id +'_operadores'][i].numero%>">Copiar este Trader</label>
+
+									<%}%>
 								</div>
 
 							</div>
 						</div>
+
+						<%}%>
 
 
 					</div>

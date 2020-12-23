@@ -1064,8 +1064,6 @@ div[data-anim~=base] {
 
 .box_operadores_overflow{
   height: 170px;
-  background:#fffc;
-  border-radius: 30px 30px 0 0;
 }
 
 .box_operadores_scroller{
@@ -1078,7 +1076,7 @@ div[data-anim~=base] {
   height: 100%;
   display: inline-block;
   width: 200px;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid #604196;
   padding: 10px;
 
   img{
@@ -1086,6 +1084,10 @@ div[data-anim~=base] {
     height: 80px;
   }
 
+}
+
+.box_operadores_overflow .operador_nome {
+  color:#604196;
 }
 
 .box_operadores_scroller .box_operador_dashboard:last-child{
@@ -1108,4 +1110,8 @@ div[data-anim~=base] {
 
 .yellow-text{
   color:#ffa726;
+}
+
+.blue-text{
+  color: #007bff;
 }
