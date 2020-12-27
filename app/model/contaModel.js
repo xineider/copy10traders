@@ -13,7 +13,6 @@ const contaSchema = new mongoose.Schema({
 	limite_perda: Number,
 	acao:String,
 	status:String,
-	process:Number,
 	deletado:Number,
 	data_cadastro:Date
 });

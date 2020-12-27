@@ -347,7 +347,7 @@ $(document).ready(function () {
 			method: 'POST',
 			async: true,
 			data: array_valores,
-			url: '/sistema/operadores/alterar-usuarios-operadores',
+			url: '/sistema/traders_globais/alterar-usuarios-operadores',
 			beforeSend: function(request){
 				adicionarLoader();
 			},

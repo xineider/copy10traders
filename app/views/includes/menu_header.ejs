@@ -14,6 +14,10 @@
 					<a class="ajax-load" href="/sistema"> <i class="fas fa-home"></i>Home </a>
 				</li>
 
+				<li class="<%= data[usuario.id + '_numero_menu'] == 4 ? 'active' : ''%>" >
+					<a class="ajax-load" href="/sistema/minha_conta"> <i class="fas fa-user-circle"></i>Minha Conta </a>
+				</li>
+
 				<%if(usuario.nivel == 2){%>
 				
 				<li class="<%= data[usuario.id + '_numero_menu'] == 2 ? 'active' : ''%>" >
@@ -23,10 +27,10 @@
 				<%}%>
 
 				<li class="<%= data[usuario.id + '_numero_menu'] == 3 ? 'active' : ''%>">
-					<a class="ajax-load" href="/sistema/operadores"> <i class="fas fa-user"></i>Operadores Globais </a>
+					<a class="ajax-load" href="/sistema/traders_globais"> <i class="fas fa-users"></i>Traders Globais </a>
 				</li>
 
-				<li><a class="logout" href="/logout" onclick="return confirm('Você deseja sair?');"> <i class="icon-logout"></i>Sair </a></li>
+				<li><a class="logout" href="/logout" onclick="return confirm('Você deseja sair?');"> <i class="fas fa-sign-out-alt"></i>Sair </a></li>
 
 			</ul>
 		</nav>
@@ -51,6 +55,11 @@
 			<a class="ajax-load" href="/sistema"> <i class="fas fa-home"></i>Home </a>
 		</li>
 
+		<li class="<%= data[usuario.id + '_numero_menu'] == 4 ? 'active' : ''%>" >
+			<a class="ajax-load" href="/sistema/minha_conta"> <i class="fas fa-user-circle"></i>Minha Conta </a>
+		</li>
+
+
 		<%if(usuario.nivel == 2){%>
 
 		<li class="<%= data[usuario.id + '_numero_menu'] == 2 ? 'active' : ''%>" >
@@ -60,10 +69,10 @@
 		<%}%>
 
 		<li class="<%= data[usuario.id + '_numero_menu'] == 3 ? 'active' : ''%>">
-			<a class="ajax-load" href="/sistema/operadores"> <i class="fas fa-user"></i>Operadores Globais </a>
+			<a class="ajax-load" href="/sistema/traders_globais"> <i class="fas fa-users"></i>Traders Globais </a>
 		</li>
 
-		<li><a class="logout" href="/logout" onclick="return confirm('Você deseja sair?');"> <i class="icon-logout"></i>Sair </a></li>
+		<li><a class="logout" href="/logout" onclick="return confirm('Você deseja sair?');"> <i class="fas fa-sign-out-alt"></i>Sair </a></li>
 
 	</ul>
 

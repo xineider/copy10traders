@@ -130,7 +130,7 @@ router.get('/', function(req, res, next) {
 						console.log('quantidade_operacoes: ' + quantidade_operacoes);
 
 						data[req.session.usuario.id+'_qtd_operacoes'] = quantidade_operacoes;
-					
+
 
 
 
@@ -193,6 +193,29 @@ router.post('/alterar-usuarios-operadores', function(req, res, next) {
 
 
 		}else{
+
+			var operadores_array = [parseInt(POST.numero_operador)];
+
+
+
+			const new_usuario_operador = new usuario_operadoresModel({ 
+				id_usuario:mongoose.Types.ObjectId(req.session.usuario.id),
+				operadores:operadores_array,
+				data_cadastro: new Date()
+			});
+
+			console.log('new_usuario_operador');
+			console.log(new_usuario_operador);
+			console.log('nnnnnnnnnnnnnnnnnnnnnn');
+
+			new_usuario_operador.save(function (err) {
+				if (err) {
+					return handleError(err);
+				}else{
+					res.json(data);
+				}
+			});
+
 
 		}
 

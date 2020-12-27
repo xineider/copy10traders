@@ -15,12 +15,9 @@ const MongoStore = require('connect-mongo')(session);
 var login = require('./app/controller/login');
 var index = require('./app/controller/index');
 var api = require('./app/controller/api');
-var recarga = require('./app/controller/recarga');
+
+
 var minha_conta = require('./app/controller/minha_conta');
-var historico = require('./app/controller/historico');
-var suporte = require('./app/controller/suporte');
-var log_trader = require('./app/controller/log_trader');
-var administracao = require('./app/controller/administracao');
 
 var operadores = require('./app/controller/operadores');
 var operacional = require('./app/controller/operacional');
@@ -157,8 +154,9 @@ app.use("/public", express.static(__dirname + '/public'));
 app.use('/', login);
 app.use('/sistema', index);
 app.use('/sistema/api', api);
-app.use('/sistema/operadores', operadores);
+app.use('/sistema/traders_globais', operadores);
 app.use('/sistema/operacional', operacional);
+app.use('/sistema/minha_conta', minha_conta);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
