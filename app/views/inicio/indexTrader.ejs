@@ -29,6 +29,7 @@
 										<th>Nome</th>
 										<th>Email</th>
 										<!-- 	<th>Licença</th> -->
+										<th>Ações</th>
 									</tr>
 								</thead>
 
@@ -46,6 +47,9 @@
 												</td>
 												<td class="text-center">
 													<%= data[usuario.id +'_usuarios'][i].email %>
+												</td>
+												<td class="text-center">
+													<button class="btn btn-primary ajax-load-to" href="/sistema/editar-usuario/<%= data[usuario.id +'_usuarios'][i]._id %>" data-to="box-adicionar-usuario">Editar</button>
 												</td>
 
 

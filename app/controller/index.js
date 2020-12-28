@@ -81,15 +81,35 @@ router.get('/', function(req, res, next) {
 				data[req.session.usuario.id + '_licenca_user'] = data_licenca;				
 				hoje = new Date();
 				data_fim = data_licenca.data_fim;
+				data_inicio = data_licenca.data_inicio;
 				console.log('data_fim:' + data_fim);
+				console.log('data_inicio: ' + data_inicio);
 				var data_fim_utc = new Date(Date.UTC(data_fim.getFullYear(),data_fim.getMonth(),data_fim.getDate()));
 				console.log('data_fim_utc:' + data_fim_utc);
 				moment.locale('pt-br');
 				var data_fim_licenca_moment = moment.utc(data_licenca.data_fim).format('DD/MM/YYYY');
 
 				data_fim.setDate(data_fim.getDate() + 1);
+				data_inicio.setDate(data_inicio.getDate());
 				diferencaData = data_fim - hoje;
+				diferencaDataInicio = data_fim - data_inicio;
+
+				
+
+
 				dias_faltantes = Math.floor(diferencaData / (1000 * 60 * 60 * 24)) + 1;
+				dias_faltantes_total = Math.floor(diferencaDataInicio / (1000 * 60 * 60 * 24));
+
+				dias_passados = dias_faltantes_total - dias_faltantes;
+				porcentagem_dias_passados = (dias_passados * 100 ) / dias_faltantes_total;
+
+
+
+				console.log('diferencaDataInicio: ' + diferencaDataInicio);
+				console.log('dias_faltantes_fim: ' + dias_faltantes);
+				console.log('dias_faltantes_total: ' + dias_faltantes_total);
+				console.log('dias_passados: ' + dias_passados);
+				console.log('porcentagem_dias_passados:' + porcentagem_dias_passados);
 
 				console.log(data_fim.getDate());
 
@@ -99,12 +119,14 @@ router.get('/', function(req, res, next) {
 
 				data[req.session.usuario.id + '_licenca_data_final'] = data_fim_licenca_moment;
 				data[req.session.usuario.id + '_licenca_user_dias'] = dias_faltantes;
+				data[req.session.usuario.id + '_porcentagem_dias_passados'] = porcentagem_dias_passados;
 				req.session.usuario.creditos = data_licenca.creditos;
 				req.session.usuario.licenca_data = data_fim;
 				req.session.usuario.licenca_dias = dias_faltantes;
 			}else{
 				data[req.session.usuario.id + '_licenca_user'] = {creditos:0,licenca_user_dias:-1,status:1};
 				data[req.session.usuario.id + '_licenca_user_dias'] = -1;
+				data[req.session.usuario.id + '_porcentagem_dias_passados'] = 0;
 			}
 
 			contaModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conta){
@@ -255,7 +277,7 @@ router.get('/', function(req, res, next) {
 			}
 
 
-			usuariosModel.find({},function(err,data_usuarios){
+			usuariosModel.find({nivel:3},function(err,data_usuarios){
 
 				data[req.session.usuario.id+'_usuarios'] = data_usuarios;
 
@@ -348,6 +370,23 @@ router.get('/', function(req, res, next) {
 
 router.get('/adicionar-usuario', function(req, res, next) {
 	console.log('estou aqui no adicionar usuario!!!!!');
+	var hoje = new Date();
+
+	moment.locale('pt-br');
+	var data_inicio_licenca = moment.utc(hoje).format('YYYY-MM-DD');
+
+	console.log('data_inicio_licenca');
+	console.log(data_inicio_licenca);
+	console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+
+	data[req.session.usuario.id+'_hoje_licenca'] = data_inicio_licenca;
+
+	console.log('batata');
+	console.log(data);
+	console.log('aaaaaaaaaaaaaaaaa');
+
+
+
 	res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'inicio/adicionar_usuario', data: data, usuario: req.session.usuario});
 });
 
@@ -368,6 +407,48 @@ router.get('/editar-operador/:id', function(req, res, next) {
 
 		res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'inicio/editar_operador', data: data, usuario: req.session.usuario});
 
+	});
+});
+
+
+router.get('/editar-usuario/:id', function(req, res, next) {
+	console.log('estou aqui no editar-usuario@@@@');
+	var id_usuario = req.params.id;
+
+
+	usuariosModel.findById(mongoose.Types.ObjectId(id_usuario),function(err,data_usuario_e){
+
+		console.log('-----data_usuario_e-----------');
+		console.log(data_usuario_e);
+		console.log('----------------');
+
+		data[req.session.usuario.id+'_usuario_editar'] = data_usuario_e;
+
+		licencaModel.findOne({'id_usuario':mongoose.Types.ObjectId(data_usuario_e._id)},function(err,data_licenca_e){
+			console.log('-----data_licenca_e-----------');
+			console.log(data_licenca_e);
+			console.log('----------------');
+
+
+
+			moment.locale('pt-br');
+			var data_inicio_licenca = moment.utc(data_licenca_e.data_inicio).format('YYYY-MM-DD');
+			var data_fim_licenca = moment.utc(data_licenca_e.data_fim).format('YYYY-MM-DD');
+
+			console.log('data_inicio_licenca');
+			console.log(data_inicio_licenca);
+			console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+
+			console.log('data_fim_licenca');
+			console.log(data_fim_licenca);
+
+			data[req.session.usuario.id+'_usuario_editar_data_inicio_licenca'] = data_inicio_licenca;
+			data[req.session.usuario.id+'_usuario_editar_data_fim_licenca'] = data_fim_licenca;
+			data[req.session.usuario.id+'_usuario_editar_licenca'] = data_licenca_e;
+			
+
+			res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'inicio/editar_usuario', data: data, usuario: req.session.usuario});
+		}).sort({'_id':-1});;
 	});
 });
 
@@ -438,8 +519,10 @@ router.post('/cadastrar-usuario', function(req, res, next) {
 	console.log(novo_usuario);
 
 
-	var licenca_data = new Date(POST.data_fim);
-	console.log(licenca_data);
+	var licenca_data_fim = new Date(POST.data_fim);
+	var licenca_data_inicio = new Date(POST.data_inicio);
+
+	console.log(licenca_data_fim);
 
 
 
@@ -451,7 +534,8 @@ router.post('/cadastrar-usuario', function(req, res, next) {
 		}else{
 			const nova_licenca = new licencaModel({ 
 				id_usuario:mongoose.Types.ObjectId(user.id),
-				data_fim:licenca_data,
+				data_inicio:licenca_data_inicio,
+				data_fim:licenca_data_fim,
 				creditos:9999,
 				deletado:0
 			});
@@ -469,11 +553,35 @@ router.post('/cadastrar-usuario', function(req, res, next) {
 		}
 	});
 
+});
 
 
+router.post('/atualizar-usuario', function(req, res, next) {
 
+	POST = req.body;
+	console.log('___________ estou no atualizar usuario ________');
+	console.log(POST);
+	console.log('_________________________________________________');
+
+
+	usuariosModel.findOneAndUpdate({'_id':POST.id_usuario},{'$set':{'nome': POST.nome,  'email':POST.email}},function(err){
+		if (err) {
+			return handleError(err);
+		}else{
+
+			var licenca_data_fim = new Date(POST.data_fim);
+			var licenca_data_inicio = new Date(POST.data_inicio);
+
+			licencaModel.findOneAndUpdate({'_id':POST.id_licenca},{'$set':{'creditos': 9999,  'data_inicio':licenca_data_inicio,'data_fim':licenca_data_fim}},function(err){
+				res.json(data);
+			});
+		}
+	}).sort({'data_cadastro':-1});
 
 });
+
+
+
 
 
 
@@ -639,33 +747,36 @@ router.post('/iniciar-operacao', function(req, res, next) {
 
 												teste_conexaoModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conexao){
 
+													contaModel.updateMany({'id_usuario':req.session.usuario.id},{'$set':{'acao':'parar'}},function(err2){
 
-													const new_conta_user = new contaModel({ 
-														id_usuario:mongoose.Types.ObjectId(req.session.usuario.id),
-														tipo:tipo_cliente,
-														email: data_conexao.email, 
-														senha:data_conexao.senha,
-														conta_real:conta_real_t,
-														tipo_banca:tipo_banca,
-														valor_entrada:POST.valor_entrada,
-														limite_perda:POST.limite_perda,
-														acao:'iniciar',
-														status:'standby',
-														deletado:0,
-														data_fim_licenca: data_licenca_i.data_fim,
-														data_cadastro: new Date()
-													});
+														const new_conta_user = new contaModel({ 
+															id_usuario:mongoose.Types.ObjectId(req.session.usuario.id),
+															tipo:tipo_cliente,
+															email: data_conexao.email, 
+															senha:data_conexao.senha,
+															conta_real:conta_real_t,
+															tipo_banca:tipo_banca,
+															valor_entrada:POST.valor_entrada,
+															limite_perda:POST.limite_perda,
+															acao:'iniciar',
+															status:'standby',
+															deletado:0,
+															data_fim_licenca: data_licenca_i.data_fim,
+															data_cadastro: new Date()
+														});
 
-													console.log('new_conta_user');
-													console.log(new_conta_user);
-													console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+														console.log('new_conta_user');
+														console.log(new_conta_user);
+														console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
 
-													new_conta_user.save(function (err) {
-														if (err) {
-															return handleError(err);
-														}else{
-															res.json(data);
-														}
+														new_conta_user.save(function (err) {
+															if (err) {
+																return handleError(err);
+															}else{
+																res.json(data);
+															}
+														});
+
 													});
 
 
@@ -730,208 +841,6 @@ router.post('/parar-operacao', function(req, res, next) {
 	}).sort({'data_cadastro':-1});
 
 });
-
-
-
-
-
-router.post('/iniciar-operacao-trader', function(req, res, next) {
-	POST = req.body;
-
-	console.log('______________________ ESTOU NO INICIAR OPERACAO DO TRADER ______________________');
-	console.log(POST);
-	console.log('_________________________________________________________________________________');
-
-	if(POST.limite_usuarios > 0){
-		if(POST.limite_usuarios % 1 ===0){
-			if(POST.limite_liquidez % 1 ===0){
-				if(POST.limite_usuarios < 201){
-
-					valor_entrada = 15;
-					limite_perda = 15;
-
-					tipo_conta_n = false;
-
-
-					tipo_banca = 'numero';
-
-					if(POST.tipo_banca == 1){
-						tipo_banca = 'percentual';
-					};
-
-					teste_conexaoModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conexao){
-
-						const new_conta_user = new contaModel({ 
-							id_usuario:mongoose.Types.ObjectId(req.session.usuario.id),
-							tipo:'trader',		
-							email: data_conexao.email, 
-							senha:data_conexao.senha,
-							conta_real:tipo_conta_n,
-							tipo_banca:tipo_banca,
-							valor_entrada:valor_entrada,
-							limite_perda:limite_perda,
-							acao:'iniciar',
-							status:'',
-							deletado:0,
-							data_cadastro: new Date()
-						});
-
-						console.log('iniciar operacao trader');
-						console.log(POST);
-						console.log('iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii');
-
-						new_conta_user.save(function (err) {
-							if (err) {
-								return handleError(err);
-							}else{
-								traderLimiteModel.findOneAndUpdate({'deletado':0},{'$set':{'limite_liquidez':POST.limite_liquidez,'limite_usuarios':POST.limite_usuarios}},function(err){
-									if (err) {
-										return handleError(err);
-									}else{
-										res.json(data);
-									}
-								}).sort({'data_cadastro':-1});
-							}
-						});
-
-					}).sort({'data_cadastro':-1});
-
-				}else{
-					res.json({error:'muitos_usuarios',element:'input[name="limite_usuarios"]',texto:'*Não é possivel ter mais de 200 usuários ativos!'});
-				}
-			}else{
-				res.json({error:'limite_liquidez_n_inteiros',element:'input[name="limite_liquidez"]',texto:'*Somente valores inteiros. Ex: 100'});
-			}
-		}else{
-			res.json({error:'limite_usuarios_n_inteiros',element:'input[name="limite_usuarios"]',texto:'*Somente valores inteiros. Ex: 100'});
-		}
-	}else{
-		res.json({error:'poucos_usuarios',element:'input[name="limite_usuarios"]',texto:'*Valor não pode ser 0 ou Negativo'});
-	}
-
-
-});
-
-
-router.post('/salvar-limites-trader', function(req, res, next) {
-	POST = req.body;
-
-	console.log('TTTTTTTTTTTTTTTTTTTT ESTOU NO SALVAR LIMITES TRADER TTTTTTTTTTTTTTTTTTTTTTT');
-	console.log(POST);
-	console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT');
-
-	if(POST.limite_liquidez % 1 === 0){
-
-		traderLimiteModel.findOneAndUpdate({'deletado':0},{'$set':{'limite_liquidez':POST.limite_liquidez}},function(err){
-			if (err) {
-				return handleError(err);
-			}else{
-				res.json(data);
-			}
-		}).sort({'data_cadastro':-1});
-
-	}else{
-		res.json({error:'limite_liquidez_n_inteiros',element:'input[name="limite_liquidez"]',texto:'*Somente valores inteiros. Ex: 100'});
-	}
-
-});
-
-
-
-router.post('/entrada-trader-call', function(req, res, next) {
-	POST = req.body;
-
-	console.log('CCCCCCCCCCCCCCCCCCCCCCCCC CALL CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC');
-	console.log(POST);
-	console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC');
-	
-	var ts = Math.round(new Date().getTime() / 1000);
-
-	var limitar_entrada = true;
-
-	if(POST.limite_liquidez == 0){
-		limitar_entrada = false;
-	}
-
-	var tipo_opcao = 'turbo';
-
-	if(POST.tipo == 'Digital'){
-		tipo_opcao = 'digital';
-	}
-
-	const new_entrada_trader = new entradasTraderModel({
-		par:POST.par,
-		direcao:'call',
-		tipo:tipo_opcao,
-		expiracao:parseInt(POST.expiracao),
-		timestamp:ts,
-		limitar_entrada:limitar_entrada,
-		valor_maximo:POST.limite_liquidez
-
-	});
-
-	console.log('new_entrada_trader');
-	console.log(new_entrada_trader);
-	console.log('nnnnnnnnnnnnnnnnnnnnnnnnnnn');
-
-	new_entrada_trader.save(function (err) {
-		if (err) {
-			return handleError(err);
-		}else{
-			res.json(data);
-		}
-	});
-
-});
-
-
-router.post('/entrada-trader-put', function(req, res, next) {
-	POST = req.body;
-
-	console.log('CCCCCCCCCCCCCCCCCCCCCCCCC CALL CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC');
-	console.log(POST);
-	console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC');
-	
-	var ts = Math.round(new Date().getTime() / 1000);
-
-	var limitar_entrada = true;
-
-	if(POST.limite_liquidez == 0){
-		limitar_entrada = false;
-	}
-
-	var tipo_opcao = 'turbo';
-
-	if(POST.tipo == 'Digital'){
-		tipo_opcao = 'digital';
-	}
-
-	const new_entrada_trader = new entradasTraderModel({
-		par:POST.par,
-		direcao:'put',
-		tipo: tipo_opcao,
-		expiracao:parseInt(POST.expiracao),
-		timestamp:ts,
-		limitar_entrada:limitar_entrada,
-		valor_maximo:POST.limite_liquidez
-
-	});
-
-	console.log('new_entrada_trader');
-	console.log(new_entrada_trader);
-	console.log('nnnnnnnnnnnnnnnnnnnnnnnnnnn');
-
-	new_entrada_trader.save(function (err) {
-		if (err) {
-			return handleError(err);
-		}else{
-			res.json(data);
-		}
-	});
-
-});
-
-
 
 
 

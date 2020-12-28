@@ -90,7 +90,7 @@
 						<div class="card-body">
 							<div class="operacional_dashboard">
 								<h5 class="card-title">Operacional</h5>
-								<div class="red-text bold">Defina seu operacional e depois inicie o sistema!</div>
+								<div class="purple-text bold">Defina seu operacional e depois inicie o sistema!</div>
 
 
 								<div class="form-group">
@@ -112,7 +112,7 @@
 									<%}%>
 								</div>
 
-								<div class="red-text bold text-center">Se você não ativar a conta real, seu sistema de teste fica no modo conta de treinamento!</div>
+								<div class="purple-text bold text-center">Se você não ativar a conta real, seu sistema de teste fica no modo conta de treinamento!</div>
 
 
 
@@ -134,7 +134,7 @@
 						<div class="card-body">
 							<h5 class="card-title">Visão da Conta</h5>
 
-							<div class="row margin-t-20 h70">
+							<div class="row margin-t-20">
 								<div class="col-sm-12 col-md-4">
 									<div class="numero_operacoes_dashboard"><%= data[usuario.id +'_entrada_nro_operacoes']%></div>
 									<div class="label_numero_operacoes_dashboard">Operações</div>
@@ -152,14 +152,84 @@
 									</div>
 
 								</div>
+							</div>
+
+							<div class="margin-t-30">
+
+								<div class="conectar_box white-text hide-mobile">
+
+									<% if (data[usuario.id +'_conexao'].status == 'primeira_vez' || data[usuario.id +'_conexao'].status == 'erro de conexao' ){%>
+
+									Olá <strong>Usuário</strong>, Conecte sua conta da corretora para começar!
+
+									<%if(data[usuario.id +'_conexao'].status == 'erro de conexao'){ %>
+									<div class="red-text margin-b-10">
+										* <b>Usuário</b> ou <b>senha</b> não conferem com a da plataforma!
+									</div>
+									<%}%>
+
+									<%- include('../inicio/testar_conexao_form')%>
+
+									<% } %>
+
+
+									<% if(data[usuario.id +'_conexao'].status == 'conectado'){ %>
+
+									<div class="container_teste_conexao">
+										<div class="block-body">
+											Sua conta está conectada como:
+
+											<div class="green-text">
+												<%= data[usuario.id +'_conexao'].email%>
+											</div>
+
+										</div>
+
+										<div class="form-group margin-t-10"> 
+
+											<button type="button" <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : '' %> data-href="/sistema/popup-confirmacao-alterar-testar-conexao" class="btn <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : 'btn-yellow' %> ajax-submit-open-modal btn-alterar-conta-conexao" data-modal='#modalinfo'>Mudar Conta</button>
+
+										</div>
+									</div>
+
+									<% } %>
+
+									<% if(data[usuario.id +'_conexao'].status == ''){ %>
+
+									<div class="container_teste_conexao">
+
+
+										<div class="text-center">Não se preocupe!</div>
+										<div>
+											Sua conta está sendo testada como: <strong class="yellow-text"><%= data[usuario.id +'_conexao'].email%></strong>
+										</div>
+
+										<div>	
+											Tentando novamente em <span class="timer_header_container">
+												<span class="timer_header">59</span>'s
+											</span>
+										</div>
+
+										<div class="margin-t-10">
+											<div class="yellow-text margin-b-10">Se preferir pode alterar a conta também!</div>
+
+											<button type="button" <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : '' %> data-href="/sistema/popup-confirmacao-alterar-testar-conexao" class="btn <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : 'btn-yellow' %> ajax-submit-open-modal btn-alterar-conta-conexao" data-modal='#modalinfo'>Mudar Conta</button>
+										</div>
+									</div>
+
+									<%}%>
+
+
+								</div>
 
 
 							</div>
-
 						</div>
+
 					</div>
 				</div>
 			</div>
+
 		</section>
 
 
@@ -253,17 +323,106 @@
 					<div class="row no-gutters">
 						<div class="col-sm-12 col-md-4 padding-20">
 
-							<!-- start feedwind code --> <script type="text/javascript" src="https://feed.mikle.com/js/fw-loader.js" preloader-text="Loading..." data-fw-param="140580/"></script> <!-- end feedwind code -->
+							<!-- start sw-rss-feed code --> 
+							<script type="text/javascript"> 
+								<!-- 
+									rssfeed_url = new Array(); 
+									rssfeed_url[0]="http://web.infomoney.com.br/offline/rss/investimentos.xml";  
+									rssfeed_frame_width="230"; 
+									rssfeed_frame_height="260"; 
+									rssfeed_scroll="on"; 
+									rssfeed_scroll_step="6"; 
+									rssfeed_scroll_bar="off"; 
+									rssfeed_target="_blank"; 
+									rssfeed_font_size="12"; 
+									rssfeed_font_face=""; 
+									rssfeed_border="on"; 
+									rssfeed_css_url=""; 
+									rssfeed_title="on"; 
+									rssfeed_title_name=""; 
+									rssfeed_title_bgcolor="#604196"; 
+									rssfeed_title_color="#fff"; 
+									rssfeed_title_bgimage=""; 
+									rssfeed_footer="off"; 
+									rssfeed_footer_name="rss feed"; 
+									rssfeed_footer_bgcolor="#fff"; 
+									rssfeed_footer_color="#333"; 
+									rssfeed_footer_bgimage=""; 
+									rssfeed_item_title_length="50"; 
+									rssfeed_item_title_color="#666"; 
+									rssfeed_item_bgcolor="transparent"; 
+									rssfeed_item_bgimage=""; 
+									rssfeed_item_border_bottom="on"; 
+									rssfeed_item_source_icon="off"; 
+									rssfeed_item_date="off"; 
+									rssfeed_item_description="on"; 
+									rssfeed_item_description_length="120"; 
+									rssfeed_item_description_color="#666"; 
+									rssfeed_item_description_link_color="#333"; 
+									rssfeed_item_description_tag="off"; 
+									rssfeed_no_items="0"; 
+									rssfeed_cache = "5f62c67b830005b4ff729a01fee76e16"; 
+
+								</script> 
+								<script type="text/javascript" src="//feed.surfing-waves.com/js/rss-feed.js"></script> 
 
 
-						</div>
-						<!-- TradingView Widget END -->
 
-						<!-- TradingView Widget BEGIN -->
-						<!-- TradingView Widget BEGIN -->
+								<!-- 	<script type="text/javascript" src="https://feed.mikle.com/js/fw-loader.js" preloader-text="Loading..." data-fw-param="140580/"></script>  -->
+								<!-- end feedwind code -->
 
-						<div class="col-sm-12 col-md-4 padding-20">
-							<div class="tradingview-widget-container">
+
+							</div>
+
+
+							<div class="col-sm-12 col-md-4 padding-20">
+
+								<!-- start sw-rss-feed code --> 
+								<script type="text/javascript"> 
+									<!-- 
+										rssfeed_url = new Array(); 
+										rssfeed_url[0]="http://web.infomoney.com.br/offline/rss/investimentos.xml";  
+										rssfeed_frame_width="230"; 
+										rssfeed_frame_height="260"; 
+										rssfeed_scroll="on"; 
+										rssfeed_scroll_step="6"; 
+										rssfeed_scroll_bar="off"; 
+										rssfeed_target="_blank"; 
+										rssfeed_font_size="12"; 
+										rssfeed_font_face=""; 
+										rssfeed_border="on"; 
+										rssfeed_css_url=""; 
+										rssfeed_title="on"; 
+										rssfeed_title_name=""; 
+										rssfeed_title_bgcolor="#604196"; 
+										rssfeed_title_color="#fff"; 
+										rssfeed_title_bgimage=""; 
+										rssfeed_footer="off"; 
+										rssfeed_footer_name="rss feed"; 
+										rssfeed_footer_bgcolor="#fff"; 
+										rssfeed_footer_color="#333"; 
+										rssfeed_footer_bgimage=""; 
+										rssfeed_item_title_length="50"; 
+										rssfeed_item_title_color="#666"; 
+										rssfeed_item_bgcolor="transparent"; 
+										rssfeed_item_bgimage=""; 
+										rssfeed_item_border_bottom="on"; 
+										rssfeed_item_source_icon="off"; 
+										rssfeed_item_date="off"; 
+										rssfeed_item_description="on"; 
+										rssfeed_item_description_length="120"; 
+										rssfeed_item_description_color="#666"; 
+										rssfeed_item_description_link_color="#333"; 
+										rssfeed_item_description_tag="off"; 
+										rssfeed_no_items="0"; 
+										rssfeed_cache = "5f62c67b830005b4ff729a01fee76e16"; 
+
+									</script> 
+									<script type="text/javascript" src="//feed.surfing-waves.com/js/rss-feed.js"></script> 
+<!-- 								<iframe src='https://br.advfn.com/common/news/feeds/iframe/paperbr' width='300' height='200' style='border:none;overflow:hidden' scrolling='no'></iframe>
+-->
+
+<!-- 							<div class="tradingview-widget-container">
 								<div class="tradingview-widget-container__widget"></div>
 								<div class="tradingview-widget-copyright"><a href="https://br.tradingview.com/markets/currencies/economic-calendar/" rel="noopener" target="_blank"><span class="blue-text">Calendário Econômico</span></a> por TradingView</div>
 								<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
@@ -277,13 +436,58 @@
 									}
 								</script>
 							</div>
-							
-						</div>
+						-->
+					</div>
 
 
 
-						<div class="col-sm-12 col-md-4 padding-20">
-							<!-- start feedwind code --> <script type="text/javascript" src="https://feed.mikle.com/js/fw-loader.js" preloader-text="Loading..." data-fw-param="140581/"></script> <!-- end feedwind code -->
+					<div class="col-sm-12 col-md-4 padding-20">
+
+						<!-- start sw-rss-feed code --> 
+						<script type="text/javascript"> 
+							<!-- 
+								rssfeed_url = new Array(); 
+								rssfeed_url[0]="http://web.infomoney.com.br/offline/rss/investimentos.xml";  
+								rssfeed_frame_width="230"; 
+								rssfeed_frame_height="260"; 
+								rssfeed_scroll="on"; 
+								rssfeed_scroll_step="6"; 
+								rssfeed_scroll_bar="off"; 
+								rssfeed_target="_blank"; 
+								rssfeed_font_size="12"; 
+								rssfeed_font_face=""; 
+								rssfeed_border="on"; 
+								rssfeed_css_url=""; 
+								rssfeed_title="on"; 
+								rssfeed_title_name=""; 
+								rssfeed_title_bgcolor="#604196"; 
+								rssfeed_title_color="#fff"; 
+								rssfeed_title_bgimage=""; 
+								rssfeed_footer="off"; 
+								rssfeed_footer_name="rss feed"; 
+								rssfeed_footer_bgcolor="#fff"; 
+								rssfeed_footer_color="#333"; 
+								rssfeed_footer_bgimage=""; 
+								rssfeed_item_title_length="50"; 
+								rssfeed_item_title_color="#666"; 
+								rssfeed_item_bgcolor="transparent"; 
+								rssfeed_item_bgimage=""; 
+								rssfeed_item_border_bottom="on"; 
+								rssfeed_item_source_icon="off"; 
+								rssfeed_item_date="off"; 
+								rssfeed_item_description="on"; 
+								rssfeed_item_description_length="120"; 
+								rssfeed_item_description_color="#666"; 
+								rssfeed_item_description_link_color="#333"; 
+								rssfeed_item_description_tag="off"; 
+								rssfeed_no_items="0"; 
+								rssfeed_cache = "5f62c67b830005b4ff729a01fee76e16"; 
+
+							</script> 
+							<script type="text/javascript" src="//feed.surfing-waves.com/js/rss-feed.js"></script> 
+							<!-- start feedwind code --> 
+							<!-- <script type="text/javascript" src="https://feed.mikle.com/js/fw-loader.js" preloader-text="Loading..." data-fw-param="140581/"></script>  -->
+							<!-- end feedwind code -->
 
 						</div>
 					</div>

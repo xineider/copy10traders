@@ -7,7 +7,7 @@ var data = {};
 var app = express();
 app.use(require('express-is-ajax-request'));
 
-
+var moment = require('moment');
 
 const mongoose = require('mongoose');
 
@@ -107,17 +107,48 @@ router.get('/', function(req, res, next) {
 					data[req.session.usuario.id + '_mensagem_horario'] = arrayMensagemData;
 
 					if(data_licenca != null){
-						data[req.session.usuario.id + '_licenca_user'] = data_licenca;
-						/*Calcular quantos dias faltam para a licença expirar*/
+						data[req.session.usuario.id + '_licenca_user'] = data_licenca;				
 						hoje = new Date();
 						data_fim = data_licenca.data_fim;
+						data_inicio = data_licenca.data_inicio;
+						console.log('data_fim:' + data_fim);
+						console.log('data_inicio: ' + data_inicio);
+						var data_fim_utc = new Date(Date.UTC(data_fim.getFullYear(),data_fim.getMonth(),data_fim.getDate()));
+						console.log('data_fim_utc:' + data_fim_utc);
+						moment.locale('pt-br');
+						var data_fim_licenca_moment = moment.utc(data_licenca.data_fim).format('DD/MM/YYYY');
+
 						data_fim.setDate(data_fim.getDate() + 1);
+						data_inicio.setDate(data_inicio.getDate());
 						diferencaData = data_fim - hoje;
+						diferencaDataInicio = data_fim - data_inicio;
+
 						dias_faltantes = Math.floor(diferencaData / (1000 * 60 * 60 * 24)) + 1;
+						dias_faltantes_total = Math.floor(diferencaDataInicio / (1000 * 60 * 60 * 24));
+
+						dias_passados = dias_faltantes_total - dias_faltantes;
+						porcentagem_dias_passados = (dias_passados * 100 ) / dias_faltantes_total;
+
+						console.log('diferencaDataInicio: ' + diferencaDataInicio);
+						console.log('dias_faltantes_fim: ' + dias_faltantes);
+						console.log('dias_faltantes_total: ' + dias_faltantes_total);
+						console.log('dias_passados: ' + dias_passados);
+						console.log('porcentagem_dias_passados:' + porcentagem_dias_passados);
+
+						console.log(data_fim.getDate());
+
+						console.log('data_fim_licenca_moment: ' + data_fim_licenca_moment);
+
+						data[req.session.usuario.id + '_licenca_data_final'] = data_fim_licenca_moment;
 						data[req.session.usuario.id + '_licenca_user_dias'] = dias_faltantes;
+						data[req.session.usuario.id + '_porcentagem_dias_passados'] = porcentagem_dias_passados;
+						req.session.usuario.creditos = data_licenca.creditos;
+						req.session.usuario.licenca_data = data_fim;
+						req.session.usuario.licenca_dias = dias_faltantes;
 					}else{
 						data[req.session.usuario.id + '_licenca_user'] = {creditos:0,licenca_user_dias:0,status:1};
 						data[req.session.usuario.id + '_licenca_user_dias'] = -1;
+						data[req.session.usuario.id + '_porcentagem_dias_passados'] = 0;
 					}
 
 					console.log('ddddddddddddddddddddddddddddddd');
@@ -125,10 +156,10 @@ router.get('/', function(req, res, next) {
 					console.log('ddddddddddddddddddddddddddddddd');
 
 					res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'minha_conta/minha_conta', data: data, usuario: req.session.usuario});
-				}).sort({'data_registro':-1}).limit(30);
-			});
-		}).sort({'data_cadastro':-1});
-	}).sort({'data_cadastro':-1});
+				}).sort({'data_registro':-1}).limit(10);
+});
+}).sort({'data_cadastro':-1});
+}).sort({'data_cadastro':-1});
 });
 
 
