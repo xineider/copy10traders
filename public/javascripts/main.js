@@ -1250,19 +1250,19 @@ function LogSistema(metodo,rota){
 	var ip;
 	var arrayValores = [];
 
-	$.getJSON("https://api.ipify.org/?format=json", function(e) {
-		ip = e.ip;
-		arrayValores = [ip,metodo,rota,navigator.userAgent,$('input[name="id_usuario_sessao"]').val()];
+	// $.getJSON("https://api.ipify.org/?format=json", function(e) {
+	// 	ip = e.ip;
+	// 	arrayValores = [ip,metodo,rota,navigator.userAgent,$('input[name="id_usuario_sessao"]').val()];
 
-		$.ajax({
-			url:'/sistema/log',
-			type:'POST',
-			data:JSON.stringify(arrayValores),
-			contentType: 'application/json', 
-			beforeSend: function(request) {
-			}
-		});
-	});
+	// 	$.ajax({
+	// 		url:'/sistema/log',
+	// 		type:'POST',
+	// 		data:JSON.stringify(arrayValores),
+	// 		contentType: 'application/json', 
+	// 		beforeSend: function(request) {
+	// 		}
+	// 	});
+	// });
 }
 
 function filtrarTabelaDataTablePt(tabela){
@@ -1330,10 +1330,6 @@ function filtrarTabelaDataTablePtNoSort(tabela){
 	});
 
 }
-
-
-
-
 
 function timer60sec(){
 	var timing = 59;

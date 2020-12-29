@@ -133,7 +133,7 @@ router.get('/', function(req, res, next) {
 				if(data_conta !=null){
 					data[req.session.usuario.id+'_conta']= data_conta;
 				}else{
-					data[req.session.usuario.id+'_conta']= {conta_real:false,email:'',senha:'',tipo_banca:0,valor_entrada:100,limite_perda:200,acao:'parar',status:'desconectado',primeira_vez:true};
+					data[req.session.usuario.id+'_conta']= {conta_real:false,email:'',senha:'',tipo_banca:0,valor_entrada:50,limite_perda:200,acao:'parar',status:'desconectado',primeira_vez:true};
 				}
 
 				teste_conexaoModel.findOne({'id_usuario':mongoose.Types.ObjectId(req.session.usuario.id)},function(err,data_conexao){
@@ -277,7 +277,7 @@ router.get('/', function(req, res, next) {
 			}
 
 
-			usuariosModel.find({nivel:3},function(err,data_usuarios){
+			usuariosModel.find({nivel:3,deletado:0},function(err,data_usuarios){
 
 				data[req.session.usuario.id+'_usuarios'] = data_usuarios;
 
@@ -496,62 +496,129 @@ router.post('/cadastrar-usuario', function(req, res, next) {
 	console.log('estou no cadastrar-usuario!!!!!!!!');
 	console.log(POST);
 	console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+	POST.email = POST.email.toLowerCase();
+	var email_usuario = POST.email.trim();
+
+	console.log('email_usuario:' + email_usuario);
+
+	if(POST.nome != ''){
+		if(POST.email != ''){
+
+			usuariosModel.findOne({'email':email_usuario},function(err,data_usuario_existente){
+
+				console.log('data_usuario_existente');
+				console.log(data_usuario_existente);
+				console.log('-------------------------');
+
+				if(data_usuario_existente == null){
 
 
-	nova_senha = Math.random().toString(36).substring(5);
+					nova_senha = Math.random().toString(36).substring(5);
 
-	var novaSenhaCriptografa = control.Encrypt(nova_senha);
+					var novaSenhaCriptografa = control.Encrypt(nova_senha);
 
-	console.log('nova_senha: '+nova_senha);
-	console.log('novaSenhaCriptografa: ' +novaSenhaCriptografa);
-
-
-	const novo_usuario = new usuariosModel({ 
-		nome:POST.nome,
-		email:POST.email,
-		senha:novaSenhaCriptografa,
-		deletado:0,
-		nivel:3,
-		data_cadastro:new Date()
-	});
-
-	console.log('novo_usuario');
-	console.log(novo_usuario);
+					console.log('nova_senha: '+nova_senha);
+					console.log('novaSenhaCriptografa: ' +novaSenhaCriptografa);
 
 
-	var licenca_data_fim = new Date(POST.data_fim);
-	var licenca_data_inicio = new Date(POST.data_inicio);
+					const novo_usuario = new usuariosModel({ 
+						nome:POST.nome,
+						email:POST.email,
+						senha:novaSenhaCriptografa,
+						deletado:0,
+						nivel:3,
+						data_cadastro:new Date()
+					});
 
-	console.log(licenca_data_fim);
+					console.log('novo_usuario');
+					console.log(novo_usuario);
+
+
+					var licenca_data_fim = new Date(POST.data_fim);
+					var licenca_data_inicio = new Date(POST.data_inicio);
+
+					console.log('licenca_data_fim:' + licenca_data_fim);
+					console.log('POST.data_fim: ' + POST.data_fim);
+
+					moment.locale('pt-br');
+					var data_fim_licenca_moment = moment.utc(POST.data_fim).format('DD/MM/YYYY');
+					console.log('data_fim_licenca_moment:' + data_fim_licenca_moment);
+
+
+
+					var html = "<div style='background: #ffffff;width:100%;'>\
+					<div style='margin:0px auto; max-width:600px;padding: 40px 0px;background: -webkit-linear-gradient(top, #423d64 0%, #aca9d2 100%);'>\
+					<div style='width:100%;height:180px; padding:20px; text-align:center;color:#ffffff;width:100%;'>\
+					<img style='max-width:280px;' src='http://copy10trader.com.br/public/images/Logo_CT.png'>\
+					</div>\
+					<div style='color:#8a8d93;width:100%;padding:20px;border-radius: 0px 30px 0 30px;padding: 10px;'>\
+					<div style='margin:0 auto;width:80%;border-radius: 0px 30px 0 30px;background:#ffffff;padding:10px;'>\
+					Parabéns, você adquiriu o Copy 10 Trader, para acessar o sistema vá para: <a href='http://copy10trader.com.br/' target='_blank'>http://copy10trader.com.br/</a>."+
+					"<br>O e-mail da sua conta é este mesmo que está recebendo."+
+					"<br>Sua senha no Copy 10 Trader é: "+nova_senha+
+					"<br>A sua licença vai até:"+data_fim_licenca_moment+
+					"<br>Caso não esteja conseguindo acessar o sitema, por-favor clique no botão esqueci minha senha!"+
+					'<br><br>Não mostre sua senha para ninguém. A sua conta é responsabilidade sua.'+
+					'<div style="height:40px; padding:10px 20px;color:#8a8d93;width:80%;font-size:14px;">\
+					* Não responda esta mensagem, ela é enviada automaticamente.'+
+					'</div>'+
+					'</div>'+
+					'</div>'+
+					'</div>\
+					</div>';
+					var text = "Parabéns, você adquiriu o Copy 10 Trader, para acessar o sistema vá para: <a href='http://copy10trader.com.br/' target='_blank'>http://copy10trader.com.br/</a>."+
+					"<br>O e-mail da sua conta é este mesmo que está recebendo."+
+					"<br>Sua senha no Copy 10 Trader é: "+nova_senha+
+					"<br>A sua licença vai até:"+data_fim_licenca_moment+
+					"<br>Caso não esteja conseguindo acessar o sitema, por-favor clique no botão esqueci minha senha!"+
+					'<br><br>Não mostre sua senha para ninguém. A sua conta é responsabilidade sua.'+
+					'<br>* Não responda esta mensagem, ela é enviada automaticamente.';
+
+
+					control.SendMail(email_usuario, 'Acesso ao Copy 10 Trader',text,html);
 
 
 
 
-	novo_usuario.save(function (err,user) {
-		if (err) {
-			console.log('err')
-			console.log(err)
-		}else{
-			const nova_licenca = new licencaModel({ 
-				id_usuario:mongoose.Types.ObjectId(user.id),
-				data_inicio:licenca_data_inicio,
-				data_fim:licenca_data_fim,
-				creditos:9999,
-				deletado:0
-			});
+					novo_usuario.save(function (err,user) {
+						if (err) {
+							console.log('err')
+							console.log(err)
+						}else{
+							const nova_licenca = new licencaModel({ 
+								id_usuario:mongoose.Types.ObjectId(user.id),
+								data_inicio:licenca_data_inicio,
+								data_fim:licenca_data_fim,
+								creditos:9999,
+								deletado:0
+							});
 
-			nova_licenca.save(function(err2,licenca){
-				if(err2){
-					console.log('err2');
-					console.log(err2);
+							nova_licenca.save(function(err2,licenca){
+								if(err2){
+									console.log('err2');
+									console.log(err2);
+								}else{
+									res.json(data);
+								}
+							});
+
+
+						}
+					});
+
 				}else{
-					res.json(data);
+					res.json({error:'email_ja_cadastrado',element:'input[name="email"]',texto:'*Este Usuário com este e-mail já existe no sistema!'});
 				}
+
 			});
 
-
+		}else{
+			res.json({error:'email_vazio',element:'input[name="email"]',texto:'*Por-favor colocar um email para o usuário!'});
 		}
-	});
+
+	}else{
+		res.json({error:'nome_vazio',element:'input[name="nome"]',texto:'*Por-favor colocar um nome para o usuário!'});
+	}
 
 });
 
@@ -800,7 +867,7 @@ router.post('/iniciar-operacao', function(req, res, next) {
 
 
 						}else{
-							res.json({error:'limite_perda_divisivel',element:'#error_mensagem_conexao',texto:'Valor de Stop deve ser divisível pelo valor de entrada: Exemplo: ' + (POST.valor_entrada * 3) + ' ou ' + (POST.valor_entrada * 4) + ' ou ' + (POST.valor_entrada * 5) + '.'});
+							res.json({error:'limite_perda_divisivel',element:'#error_mensagem_conexao',texto:'Valor de Stop deve ser divisível no mínimo 3x do valor de entrada: Exemplo: ' + (POST.valor_entrada * 3) + ' ou ' + (POST.valor_entrada * 4) + ' ou ' + (POST.valor_entrada * 5) + '.'});
 						}
 
 					}else{
@@ -881,6 +948,165 @@ router.post('/limpar-mensagem/:id', function(req, res, next) {
 	});
 	
 });
+
+router.get('/alterar-senha-usuario/:id_usuario', function(req, res, next) {
+
+	console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+	console.log('estou no alterar-senha');
+	console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+
+
+
+	var id_usuario = req.params.id_usuario;
+
+
+	usuariosModel.findById(mongoose.Types.ObjectId(id_usuario),function(err,data_usuario_a){
+
+		console.log('data_usuario_a');
+		console.log(data_usuario_a);
+		console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq');
+
+		data[req.session.usuario.id+'_usuario_alterar_senha'] = data_usuario_a;
+
+		res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'inicio/alterar_senha_usuario', data: data, usuario: req.session.usuario});
+
+
+	});
+});
+
+router.get('/bloquear-usuario/:id_usuario', function(req, res, next) {
+
+	console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+	console.log('estou no bloquear-usuario');
+	console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+
+	var id_usuario = req.params.id_usuario;
+
+
+	usuariosModel.findById(mongoose.Types.ObjectId(id_usuario),function(err,data_usuario_a){
+
+		console.log('data_usuario_a');
+		console.log(data_usuario_a);
+		console.log('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq');
+
+		data[req.session.usuario.id+'_usuario_alterar_senha'] = data_usuario_a;
+
+		res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'inicio/bloquear_usuario', data: data, usuario: req.session.usuario});
+
+
+	});
+});
+
+
+router.post('/atualizar-senha-usuario', function(req, res, next) {
+
+	POST = req.body;
+
+	console.log('RECUPERAR SENHA @@@@@@@@@@@@');
+	console.log(POST);
+	console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+
+
+	console.log('usuario find model');
+	nova_senha = Math.random().toString(36).substring(5);
+
+	var novaSenhaCriptografa = control.Encrypt(nova_senha);
+
+	console.log('nova_senha: '+nova_senha);
+	console.log('novaSenhaCriptografa: ' +novaSenhaCriptografa);
+
+	usuariosModel.findOne({'_id':POST.id_usuario},function(err,data_usuario){
+
+		usuariosModel.findOneAndUpdate({'_id':POST.id_usuario},{'$set':{'senha':novaSenhaCriptografa}},function(err){
+			if (err) {
+				return handleError(err);
+			}else{
+
+				var html = "<div style='background: #ffffff;width:100%;'>\
+				<div style='margin:0px auto; max-width:600px;padding: 40px 0px;background: -webkit-linear-gradient(top, #423d64 0%, #aca9d2 100%);'>\
+				<div style='width:100%;height:180px; padding:20px; text-align:center;color:#ffffff;width:100%;'>\
+				<img style='max-width:280px;' src='http://copy10trader.com.br/public/images/Logo_CT.png'>\
+				</div>\
+				<div style='color:#8a8d93;width:100%;padding:20px;border-radius: 0px 30px 0 30px;padding: 10px;'>\
+				<div style='margin:0 auto;width:80%;border-radius: 0px 30px 0 30px;background:#ffffff;padding:10px;'>\
+				Olá, você está recebendo este e-mail pois a administração resetou a sua senha."+
+				"<br>Sua nova senha no Copy 10 Trader é: "+nova_senha+
+				"<br>Caso não pediu para recuperar a sua senha entre em contato com o Suporte pelo telegram."+
+				'<br><br>Não mostre sua senha para ninguém. A sua conta é responsabilidade sua.'+
+				'<div style="height:40px; padding:10px 20px;color:#8a8d93;width:80%;font-size:14px;">\
+				* Não responda esta mensagem, ela é enviada automaticamente.'+
+				'</div>'+
+				'</div>'+
+				'</div>'+
+				'</div>\
+				</div>';
+				var text = "Olá, você está recebendo este e-mail pois a administração resetou a sua senha."+
+				"<br>Sua nova senha no Copy 10 Trader é: "+nova_senha+
+				"<br>Caso não pediu para recuperar a sua senha entre em contato com o Suporte pelo telegram"+
+				'<br><br>Não mostre sua senha para ninguém. A sua conta é responsabilidade sua.'+
+				'<br>* Não responda esta mensagem, ela é enviada automaticamente.';
+
+
+
+
+				control.SendMail(data_usuario.email, 'Recuperação de Senha - Copy 10 Trader',text,html);				
+				res.json(data);
+			}
+		});
+
+	});
+
+});
+
+
+
+router.post('/banir-usuario', function(req, res, next) {
+
+	POST = req.body;
+
+	console.log('@@@@@@@@@@@@@@ BANIR USUARIO @@@@@@@@@@@@@@@');
+	console.log(POST);
+	console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+
+
+	usuariosModel.findOne({'_id':POST.id_usuario},function(err,data_usuario){
+
+		usuariosModel.findOneAndUpdate({'_id':POST.id_usuario},{'$set':{'deletado':1}},function(err){
+			if (err) {
+				return handleError(err);
+			}else{
+
+				var html = "<div style='background: #ffffff;width:100%;'>\
+				<div style='margin:0px auto; max-width:600px;padding: 40px 0px;background: -webkit-linear-gradient(top, #423d64 0%, #aca9d2 100%);'>\
+				<div style='width:100%;height:180px; padding:20px; text-align:center;color:#ffffff;width:100%;'>\
+				<img style='max-width:280px;' src='http://copy10trader.com.br/public/images/Logo_CT.png'>\
+				</div>\
+				<div style='color:#8a8d93;width:100%;padding:20px;border-radius: 0px 30px 0 30px;padding: 10px;'>\
+				<div style='margin:0 auto;width:80%;border-radius: 0px 30px 0 30px;background:#ffffff;padding:10px;'>\
+				Olá, você está recebendo este e-mail pois a administração Baniu Sua Conta."+
+				'<div style="height:40px; padding:10px 20px;color:#8a8d93;width:80%;font-size:14px;">\
+				* Não responda esta mensagem, ela é enviada automaticamente.'+
+				'</div>'+
+				'</div>'+
+				'</div>'+
+				'</div>\
+				</div>';
+				var text = "Olá, você está recebendo este e-mail pois a administração Baniu Sua Conta."+
+				'<br>* Não responda esta mensagem, ela é enviada automaticamente.';
+
+
+
+
+				control.SendMail(data_usuario.email, 'Conta Banida - Copy 10 Trader',text,html);				
+				res.json(data);
+			}
+		});
+
+	});
+
+});
+
+
 
 
 module.exports = router;

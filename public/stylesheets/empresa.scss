@@ -723,6 +723,10 @@ div[data-anim~=base] {
     border-top:10px;
   }
 
+  .hide-tablet{
+    display: none;
+  }
+
 }
 
 
@@ -742,6 +746,15 @@ div[data-anim~=base] {
   .flex-desktop{
     display: flex;
   }
+
+}
+
+@media (max-width: 1400px){
+
+  .hide-xxl{
+    display: none;
+  }
+
 
 }
 
@@ -809,3 +822,61 @@ div[data-anim~=base] {
   color: #604196; 
 }
 
+.btn.transparent{
+  border:1px solid #1221D6;
+  color: #1221D6;
+
+  &:hover{
+    border:1px solid #000a80;
+    color:#000a80;
+  }
+
+  &:focus{
+    outline:none!important;
+    box-shadow:none;
+  }
+
+}
+
+.mensagem_box_minha_conta{
+  max-height: 280px; 
+  overflow: auto;
+}
+
+.modal-open .modal .modal-content{
+  border-radius:30px;
+}
+
+.no-border{
+  border:0;
+}
+
+.btn_modal_close{
+  background:#c5c5c5;
+
+  &:hover{
+    background:#a7a7a7;
+  }
+   
+}
+
+.operadores_modal_video{
+  position:absolute;
+  top:10px;
+  right: 10px;
+  z-index: 2;
+}
+
+.btn-red{
+  background:#f72323;
+  color:#fff;
+
+  &:hover{
+    background:#c50f0f;
+  }
+
+  &:focus{
+    box-shadow:none;
+    outline: none;
+  }
+}

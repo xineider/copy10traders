@@ -75,6 +75,11 @@
 										<div class="card-panel red darken-1 center-align" style="margin-bottom: 25px;">
 											<span class="yellow-text bold">* Você foi desconectado do Sistema, mas não se preocupe é normal, por-favor acesse o sistema novamente! *</span>
 										</div>
+										<%}else if(typeof erro != 'undefined' && typeof tipo_erro != 'undefined' && tipo_erro == 'banido' ){%>
+										<div class="card-panel red darken-1 text-center" style="margin-bottom: 25px;">
+											<span class="red-text bold">Você foi bloqueado do sistema,entre em contato com o administrador</span>
+										</div>
+
 										<%}%>
 
 									</div>

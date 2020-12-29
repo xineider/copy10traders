@@ -48,14 +48,21 @@ router.post('/', function(req, res, next) {
 		console.log('**************************************');
 
 		if(data_login != null){
-			req.session.usuario = {};
-			req.session.usuario.id = data_login['_id'];
-			req.session.usuario.nivel = data_login['nivel'];
-			req.session.usuario.nome = data_login['nome'];
-			req.session.usuario.email = data_login['email'];
-			console.log('req.session.usuario');
-			console.log(req.session.usuario);
-			res.redirect('/sistema');
+			if(data_login.deletado == 0){
+				req.session.usuario = {};
+				req.session.usuario.id = data_login['_id'];
+				req.session.usuario.nivel = data_login['nivel'];
+				req.session.usuario.nome = data_login['nome'];
+				req.session.usuario.email = data_login['email'];
+				console.log('req.session.usuario');
+				console.log(req.session.usuario);
+				res.redirect('/sistema');
+
+			}else{
+				console.log('estou caindo aqui no erro do login ou senha incorreto');
+				res.render('login/index', { erro: 'Usuário Banido', tipo_erro: 'banido' });
+			}
+
 		}else{
 			console.log('estou caindo aqui no erro do login ou senha incorreto');
 			res.render('login/index', { erro: 'Login ou senha incorreto(s).', tipo_erro: 'login' });
@@ -100,29 +107,30 @@ router.post('/recuperar/senha', function(req, res, next) {
 					return handleError(err);
 				}else{
 
-					var html = "<div style='background:965da4;background: linear-gradient(135deg, #59a7ab 0%,#965da4 98%);width:100%;'>\
-					<div style='margin:0px auto; max-width:600px;padding: 40px 0px;'>\
-					<div style='background:#ffffff;width:100%;height:140px; padding:20px; text-align:center;color:#ffffff;width:100%;'>\
-					<img style='max-width:280px;' src='http://copyelitebank.com.br/public/images/logo_elite.png'>\
+					var html = "<div style='background: #ffffff;width:100%;'>\
+					<div style='margin:0px auto; max-width:600px;padding: 40px 0px;background: -webkit-linear-gradient(top, #423d64 0%, #aca9d2 100%);'>\
+					<div style='width:100%;height:180px; padding:20px; text-align:center;color:#ffffff;width:100%;'>\
+					<img style='max-width:280px;' src='http://copy10trader.com.br/public/images/Logo_CT.png'>\
 					</div>\
-					<div style='background: #f3f2ee;color:#8a8d93;width:100%;padding:20px;'>"+
-					"Olá, você está recebendo este e-mail pois pediu para recuperar sua senha."+
-					"<br>Sua nova senha no Elite Bank é: "+nova_senha+
+					<div style='color:#8a8d93;width:100%;padding:20px;border-radius: 0px 30px 0 30px;padding: 10px;'>\
+					<div style='margin:0 auto;width:80%;border-radius: 0px 30px 0 30px;background:#ffffff;padding:10px;'>\
+					Olá, você está recebendo este e-mail pois pediu para recuperar sua senha."+
+					"<br>Sua nova senha no Copy 10 Traders é: "+nova_senha+
 					"<br>Caso não pediu para recuperar a sua senha entre em contato com o Suporte pelo telegram."+
-					'<br><br>Não mostre sua senha para ninguém. A sua conta é responsabilidade sua.'+
-					'</div>'+
-					'<div style="width:100%;height:20px; padding:10px 20px;color:#8a8d93;width:100%;font-size:14px;background:#f3f2ee">\
+					'<div style="height:40px; padding:10px 20px;color:#8a8d93;width:80%;font-size:14px;">\
 					* Não responda esta mensagem, ela é enviada automaticamente.'+
+					'</div>'+
+					'</div>'+
+					'</div>'+
 					'</div>\
-					</div>\
 					</div>';
-					var text = "Olá, você está recebendo este e-mail pois pediu para recuperar sua senha"+
-					"<br>Sua nova senha no Elite Bank é: "+nova_senha+
-					"<br>Caso não pediu para recuperar a sua senha entre em contato com o Suporte pelo telegram"+
-					'<br><br>Não mostre sua senha para ninguém. A sua conta é responsabilidade sua.'+
+					var text = "Olá, você está recebendo este e-mail pois pediu para recuperar sua senha."+
+					"<br>Sua nova senha no Copy 10 Traders é: "+nova_senha+
+					"<br>Caso não pediu para recuperar a sua senha entre em contato com o Suporte pelo telegram."+
 					'<br>* Não responda esta mensagem, ela é enviada automaticamente.';
 
-					control.SendMail(POST.email, 'Recuperação de Senha - Elite Bank',text,html);				
+
+					control.SendMail(POST.email, 'Recuperação de Senha - Copy 10 Traders',text,html);				
 					res.json(data);
 				}
 			});

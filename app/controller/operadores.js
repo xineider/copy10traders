@@ -278,5 +278,24 @@ router.post('/alterar-usuarios-operadores', function(req, res, next) {
 
 
 
+router.get('/video-apresentacao/:id', function(req, res, next) {
+	console.log('estou aqui no video-operador####');
+	var numero_operador = req.params.id;
+
+
+	operadoresModel.findOne({'numero':numero_operador},function(err,data_operador_v){
+		console.log('-----data_operador-----------');
+		console.log(data_operador_v);
+		console.log('----------------');
+
+		// data[req.session.usuario.id+'_operador_editar'] = data_operador;
+
+
+		res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'operadores/video_apresentacao', data: data, usuario: req.session.usuario});
+
+	});
+});
+
+
 
 module.exports = router;

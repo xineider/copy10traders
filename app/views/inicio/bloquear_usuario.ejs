@@ -1,0 +1,27 @@
+<%if(usuario.nivel == 2){%>
+
+<div class="white padding-5 margin-t-10">
+	<div class="">Bloquear Usuário!</div>
+
+	<div class="margin-b-10">
+		Você tem certeza que deseja <strong>BLOQUEAR <%= data[usuario.id +'_usuario_alterar_senha'].nome %></strong> com o email <strong><%= data[usuario.id +'_usuario_alterar_senha'].email %></strong>?
+		<br>
+		Essa ação <strong>NÃO</strong> pode ser desfeita e o usuário não poderá mais acessar o sistema!
+	</div>
+
+	<form method="POST" action="" enctype="multipart/form-data">
+
+		<input type="hidden" name="id_usuario" value="<%= data[usuario.id +'_usuario_alterar_senha']._id %>">
+
+
+		<button type="button" data-href="/sistema/banir-usuario/" class="btn btn-red ajax-submit" title="Bloquear Usuário" data-action="/sistema" >Bloquear Usuário</button>
+
+	</form>
+
+</div>
+
+<%}else{%>
+<div class="padding=10">
+	Você não pode acessar essa funcionalidade!!!
+</div>
+<%}%>

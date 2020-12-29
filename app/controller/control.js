@@ -86,41 +86,50 @@ class Control {
 
 
 	SendMail(para, assunto,text, html) {
-		nodemailer.createTestAccount((err, account) => {
 
-					// create reusable transporter object using the default SMTP transport
-					let transporter = nodemailer.createTransport({
-						host: 'mail.elitetradersoficial.com.br',
-						secure: false,
-						port: 587,						
-						auth: {
-							user: 'naoresponda@elitetradersoficial.com.br',
-							pass: 'MPav7HlgoMag'
-						}, tls: {
-							rejectUnauthorized:false
-						}
-					});
+		var usuario = 'naoresponda_copymoneycanga@hotmail.com';
+		var senha = 'senha_C4ng4_M1n8227';
 
-					// setup email data with unicode symbols
-					let mailOptions = {
-							from: '"Elite Bank - Não Responda" <naoresponda@elitetradersoficial.com.br>', // sender address
-							to: para, // list of receivers
-							subject: assunto, // Subject line
-							text: text, 
-							html: html // html body
-						};
+		var randomico = Math.floor(Math.random() * 6); 
+		console.log('randomico: ' + randomico);
+
+		if(randomico == 0){
+			
+		}
+
+		let transporter = nodemailer.createTransport({
+			host: 'smtp-mail.outlook.com',			
+			secure: false,
+			port: 587,						
+			auth: {
+				user: usuario,
+				pass: senha
+			},  tls: {
+				ciphers:'SSLv3'
+			}
+		});
 
 
-					// send mail with defined transport object
-					transporter.sendMail(mailOptions, (error, info) => {
-						if (error) {
-							return console.log(error);
-						}
-						console.log('Message sent: %s', info.messageId);
-							// Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@blurdybloop.com>
-							// Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-						});
-				});
+		let mailOptions = {
+			from: '"Copy 10 Traders - Não Responda" <' +usuario +'>',
+			to: para, 
+			subject: assunto, 
+			text: text, 
+			html: html 
+		};
+
+
+
+		transporter.sendMail(mailOptions, (error, info) => {
+			if (error) {
+				return console.log(error);
+			}
+			console.log('Message sent: %s', info.messageId);
+
+		});
+
+		transporter.close();
+
 	}
 
 	SendMailAttachment(para, assunto,text, html,nomeAnexo,caminhoAnexo) {

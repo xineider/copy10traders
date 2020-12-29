@@ -94,16 +94,16 @@
 
 
 								<div class="form-group">
-									<div for="valor_entrada" class="white-text">Valor de Entrada</div>
-									<input type="number" class="form-control" id="valor_entrada" name="valor_entrada" value="<%= data[usuario.id +'_conta'].valor_entrada%>">
+									<div for="valor_entrada" class="white-text">Valor por Entrada</div>
+									<input type="number" class="form-control" id="valor_entrada" name="valor_entrada" <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : '' %> value="<%= data[usuario.id +'_conta'].valor_entrada%>">
 								</div>
 								<div class="form-group">
 									<div for="limite_perda" class="white-text">Valor de Stop</div>
-									<input type="number" class="form-control" id="limite_perda" name="limite_perda" value="<%= data[usuario.id +'_conta'].limite_perda%>">
+									<input type="number" <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : '' %> class="form-control" id="limite_perda" name="limite_perda" value="<%= data[usuario.id +'_conta'].limite_perda%>">
 								</div>
 
 								<div class="custom-control custom-switch text-center">
-									<input type="checkbox" name="tipo_conta" value="0" class="custom-control-input" id="tipo_conta" <%= data[usuario.id +'_conta'].conta_real == true ? 'checked' : ''%>>
+									<input type="checkbox" name="tipo_conta" value="0" class="custom-control-input" <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : '' %> id="tipo_conta" <%= data[usuario.id +'_conta'].conta_real == true ? 'checked' : ''%>>
 									<%if(data[usuario.id +'_conta'].conta_real == true){%>
 									<label class="custom-control-label blue-text label_tipo_conta_change" id="label_tipo_conta_change " for="tipo_conta">Conta Real Ativada</label>
 									<%}else{%>								
@@ -250,17 +250,17 @@
 
 										<div class="box_operador_dashboard">
 											<div>
-												<a class="ajax-load" href="/sistema/operadores">
+												<a class="ajax-load" href="/sistema/traders_globais">
 													<img src="/public/images/operadores/trader<%=data[usuario.id +'_operadores'][i].numero %>.png">															
 												</a>
 											</div>
 											<div>
-												<a class="ajax-load" href="/sistema/operadores">
+												<a class="ajax-load" href="/sistema/traders_globais">
 													<span class="operador_nome text-center"><%= data[usuario.id +'_operadores'][i].nome %></span>
 												</a>
 											</div>
 											<div class="custom-control custom-switch ">
-												<input type="checkbox" class="custom-control-input copiar_este_trader" id="copiar_trader_<%= data[usuario.id +'_operadores'][i].numero%>" value="<%= data[usuario.id +'_operadores'][i].numero%>" <%= data[usuario.id +'_usuarios_operadores'].operadores.includes(data[usuario.id +'_operadores'][i].numero) == true ? 'checked' : '' %> >
+												<input type="checkbox" class="custom-control-input copiar_este_trader" <%= data[usuario.id +'_conta'].acao == 'iniciar' ? 'disabled' : '' %> id="copiar_trader_<%= data[usuario.id +'_operadores'][i].numero%>" value="<%= data[usuario.id +'_operadores'][i].numero%>" <%= data[usuario.id +'_usuarios_operadores'].operadores.includes(data[usuario.id +'_operadores'][i].numero) == true ? 'checked' : '' %> >
 
 												<% if(data[usuario.id +'_usuarios_operadores'].operadores.includes(data[usuario.id +'_operadores'][i].numero) == true){ %>
 
@@ -285,11 +285,11 @@
 						<div class="col-sm-12 margin-t-10">
 							<% if(data[usuario.id +'_conta'].acao == 'parar' || data[usuario.id +'_conta'].status == 'desconectado'){ %>
 
-							<button type="button" <%= (data[usuario.id +'_conexao'].email == '' && data[usuario.id +'_conexao'].senha == '') || (data[usuario.id +'_conexao'].status != 'conectado') ? 'disabled' : '' %> data-href="/sistema/iniciar-operacao/" id="botao_iniciar_sistema" class="btn <%= (data[usuario.id +'_conexao'].email == '' && data[usuario.id +'_conexao'].senha == '') || (data[usuario.id +'_conexao'].status != 'conectado')  ? 'disabled' : 'btn_iniciar_sistema' %> btn-block margin-t-10 margin-b-10 ajax-submit" title="Para Iniciar o Sistema, Teste a conexão antes!">Iniciar Sistema</button>
+							<button type="button" <%= (data[usuario.id +'_conexao'].email == '' && data[usuario.id +'_conexao'].senha == '') || (data[usuario.id +'_conexao'].status != 'conectado') ? 'disabled' : '' %> data-href="/sistema/iniciar-operacao/" id="botao_iniciar_sistema" class="btn <%= (data[usuario.id +'_conexao'].email == '' && data[usuario.id +'_conexao'].senha == '') || (data[usuario.id +'_conexao'].status != 'conectado')  ? 'disabled' : 'btn_iniciar_sistema' %> btn-block margin-t-10 margin-b-10 ajax-submit" title="Para Iniciar o Sistema, Teste a conexão antes!" data-action="/sistema">Iniciar Sistema</button>
 
 
 							<%}else {%>
-							<button type="button" id="botao_parar_sistema" data-href="/sistema/parar-operacao/" class="btn btn-danger btn-block margin-t-10 margin-b-10 ajax-submit" title="Parar Sistema">Parar Sistema</button>
+							<button type="button" id="botao_parar_sistema" data-href="/sistema/parar-operacao/" class="btn btn-danger btn-block margin-t-10 margin-b-10 ajax-submit" title="Parar Sistema" data-action="/sistema">Parar Sistema</button>
 							<% }%>
 						</div>
 
@@ -314,150 +314,33 @@
 			<div class="col-sm-12">
 				<div class="card h-100 gradient-card-3  margin-b-0">
 
-					<h5 class="card-title">Notícias</h5>
+					<h5 class="card-title">Notícias
+
+					<button class="btn transparent float-right" onClick="window.location.reload();">Carregar Notícias</button>
+
+					</h5>
 
 
-
-					<!-- TradingView Widget BEGIN -->
 
 					<div class="row no-gutters">
-						<div class="col-sm-12 col-md-4 padding-20">
 
-							<!-- start sw-rss-feed code --> 
+
+						<div class="col-sm-12 col-md-4 col-xxl-3 padding-20 noticia_1">
+
+							
 							<script type="text/javascript"> 
-								<!-- 
-									rssfeed_url = new Array(); 
-									rssfeed_url[0]="http://web.infomoney.com.br/offline/rss/investimentos.xml";  
-									rssfeed_frame_width="230"; 
-									rssfeed_frame_height="260"; 
-									rssfeed_scroll="on"; 
-									rssfeed_scroll_step="6"; 
-									rssfeed_scroll_bar="off"; 
-									rssfeed_target="_blank"; 
-									rssfeed_font_size="12"; 
-									rssfeed_font_face=""; 
-									rssfeed_border="on"; 
-									rssfeed_css_url=""; 
-									rssfeed_title="on"; 
-									rssfeed_title_name=""; 
-									rssfeed_title_bgcolor="#604196"; 
-									rssfeed_title_color="#fff"; 
-									rssfeed_title_bgimage=""; 
-									rssfeed_footer="off"; 
-									rssfeed_footer_name="rss feed"; 
-									rssfeed_footer_bgcolor="#fff"; 
-									rssfeed_footer_color="#333"; 
-									rssfeed_footer_bgimage=""; 
-									rssfeed_item_title_length="50"; 
-									rssfeed_item_title_color="#666"; 
-									rssfeed_item_bgcolor="transparent"; 
-									rssfeed_item_bgimage=""; 
-									rssfeed_item_border_bottom="on"; 
-									rssfeed_item_source_icon="off"; 
-									rssfeed_item_date="off"; 
-									rssfeed_item_description="on"; 
-									rssfeed_item_description_length="120"; 
-									rssfeed_item_description_color="#666"; 
-									rssfeed_item_description_link_color="#333"; 
-									rssfeed_item_description_tag="off"; 
-									rssfeed_no_items="0"; 
-									rssfeed_cache = "5f62c67b830005b4ff729a01fee76e16"; 
 
-								</script> 
-								<script type="text/javascript" src="//feed.surfing-waves.com/js/rss-feed.js"></script> 
-
-
-
-								<!-- 	<script type="text/javascript" src="https://feed.mikle.com/js/fw-loader.js" preloader-text="Loading..." data-fw-param="140580/"></script>  -->
-								<!-- end feedwind code -->
-
-
-							</div>
-
-
-							<div class="col-sm-12 col-md-4 padding-20">
-
-								<!-- start sw-rss-feed code --> 
-								<script type="text/javascript"> 
-									<!-- 
-										rssfeed_url = new Array(); 
-										rssfeed_url[0]="http://web.infomoney.com.br/offline/rss/investimentos.xml";  
-										rssfeed_frame_width="230"; 
-										rssfeed_frame_height="260"; 
-										rssfeed_scroll="on"; 
-										rssfeed_scroll_step="6"; 
-										rssfeed_scroll_bar="off"; 
-										rssfeed_target="_blank"; 
-										rssfeed_font_size="12"; 
-										rssfeed_font_face=""; 
-										rssfeed_border="on"; 
-										rssfeed_css_url=""; 
-										rssfeed_title="on"; 
-										rssfeed_title_name=""; 
-										rssfeed_title_bgcolor="#604196"; 
-										rssfeed_title_color="#fff"; 
-										rssfeed_title_bgimage=""; 
-										rssfeed_footer="off"; 
-										rssfeed_footer_name="rss feed"; 
-										rssfeed_footer_bgcolor="#fff"; 
-										rssfeed_footer_color="#333"; 
-										rssfeed_footer_bgimage=""; 
-										rssfeed_item_title_length="50"; 
-										rssfeed_item_title_color="#666"; 
-										rssfeed_item_bgcolor="transparent"; 
-										rssfeed_item_bgimage=""; 
-										rssfeed_item_border_bottom="on"; 
-										rssfeed_item_source_icon="off"; 
-										rssfeed_item_date="off"; 
-										rssfeed_item_description="on"; 
-										rssfeed_item_description_length="120"; 
-										rssfeed_item_description_color="#666"; 
-										rssfeed_item_description_link_color="#333"; 
-										rssfeed_item_description_tag="off"; 
-										rssfeed_no_items="0"; 
-										rssfeed_cache = "5f62c67b830005b4ff729a01fee76e16"; 
-
-									</script> 
-									<script type="text/javascript" src="//feed.surfing-waves.com/js/rss-feed.js"></script> 
-<!-- 								<iframe src='https://br.advfn.com/common/news/feeds/iframe/paperbr' width='300' height='200' style='border:none;overflow:hidden' scrolling='no'></iframe>
--->
-
-<!-- 							<div class="tradingview-widget-container">
-								<div class="tradingview-widget-container__widget"></div>
-								<div class="tradingview-widget-copyright"><a href="https://br.tradingview.com/markets/currencies/economic-calendar/" rel="noopener" target="_blank"><span class="blue-text">Calendário Econômico</span></a> por TradingView</div>
-								<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
-									{
-										"colorTheme": "light",
-										"isTransparent": true,
-										"width": "510",
-										"height": "600",
-										"locale": "br",
-										"importanceFilter": "-1,0,1"
-									}
-								</script>
-							</div>
-						-->
-					</div>
-
-
-
-					<div class="col-sm-12 col-md-4 padding-20">
-
-						<!-- start sw-rss-feed code --> 
-						<script type="text/javascript"> 
-							<!-- 
 								rssfeed_url = new Array(); 
-								rssfeed_url[0]="http://web.infomoney.com.br/offline/rss/investimentos.xml";  
-								rssfeed_frame_width="230"; 
-								rssfeed_frame_height="260"; 
+								rssfeed_url[0]="https://br.investing.com/rss/news_285.rss";  
+								rssfeed_frame_width="250"; 
+								rssfeed_frame_height="460"; 
 								rssfeed_scroll="on"; 
 								rssfeed_scroll_step="6"; 
 								rssfeed_scroll_bar="off"; 
 								rssfeed_target="_blank"; 
 								rssfeed_font_size="12"; 
 								rssfeed_font_face=""; 
-								rssfeed_border="on"; 
-								rssfeed_css_url=""; 
+								rssfeed_border="off";  
 								rssfeed_title="on"; 
 								rssfeed_title_name=""; 
 								rssfeed_title_bgcolor="#604196"; 
@@ -469,14 +352,115 @@
 								rssfeed_footer_color="#333"; 
 								rssfeed_footer_bgimage=""; 
 								rssfeed_item_title_length="50"; 
-								rssfeed_item_title_color="#666"; 
+								rssfeed_item_title_color="#000"; 
 								rssfeed_item_bgcolor="transparent"; 
 								rssfeed_item_bgimage=""; 
 								rssfeed_item_border_bottom="on"; 
 								rssfeed_item_source_icon="off"; 
-								rssfeed_item_date="off"; 
+								rssfeed_item_date="on"; 
 								rssfeed_item_description="on"; 
-								rssfeed_item_description_length="120"; 
+								rssfeed_item_description_length="300"; 
+								rssfeed_item_description_color="#666"; 
+								rssfeed_item_description_link_color="#333"; 
+								rssfeed_item_description_tag="off"; 
+								rssfeed_no_items="0"; 
+								rssfeed_cache = "e0218fffba4965f55f4521cfe2320fc6"; 
+
+							</script> 
+							<script type="text/javascript" src="//feed.surfing-waves.com/js/rss-feed.js"></script> 
+
+
+
+
+
+						</div>
+
+
+						<div class="col-sm-12 col-md-4 col-xxl-3 padding-20 hide-tablet noticia_2">
+
+							<script type="text/javascript"> 
+
+								rssfeed_url = new Array(); 
+								rssfeed_url[0]="https://br.investing.com/rss/news_25.rss";  
+								rssfeed_frame_width="250"; 
+								rssfeed_frame_height="460"; 
+								rssfeed_scroll="on"; 
+								rssfeed_scroll_step="6"; 
+								rssfeed_scroll_bar="off"; 
+								rssfeed_target="_blank"; 
+								rssfeed_font_size="12"; 
+								rssfeed_font_face=""; 
+								rssfeed_border="off"; 
+								rssfeed_title="on"; 
+								rssfeed_title_name=""; 
+								rssfeed_title_bgcolor="#604196"; 
+								rssfeed_title_color="#fff"; 
+								rssfeed_title_bgimage=""; 
+								rssfeed_footer="off"; 
+								rssfeed_footer_name="rss feed"; 
+								rssfeed_footer_bgcolor="#fff"; 
+								rssfeed_footer_color="#333"; 
+								rssfeed_footer_bgimage=""; 
+								rssfeed_item_title_length="50"; 
+								rssfeed_item_title_color="#000"; 
+								rssfeed_item_bgcolor="transparent"; 
+								rssfeed_item_bgimage=""; 
+								rssfeed_item_border_bottom="on"; 
+								rssfeed_item_source_icon="off"; 
+								rssfeed_item_date="on"; 
+								rssfeed_item_description="on"; 
+								rssfeed_item_description_length="300"; 
+								rssfeed_item_description_color="#666"; 
+								rssfeed_item_description_link_color="#333"; 
+								rssfeed_item_description_tag="off"; 
+								rssfeed_no_items="0"; 
+								rssfeed_cache = "80d4c45247ce5e1c8b7b2dda1d02997e"; 
+
+							</script> 
+							<script type="text/javascript" src="//feed.surfing-waves.com/js/rss-feed.js"></script> 
+
+
+
+
+						</div>
+
+
+
+						<div class="col-sm-12 col-md-4 col-xxl-3 padding-20 hide-mobile noticia_3">
+
+
+							<script type="text/javascript"> 
+
+								rssfeed_url = new Array(); 
+								rssfeed_url[0]="https://br.investing.com/rss/news_95.rss";  
+								rssfeed_frame_width="250"; 
+								rssfeed_frame_height="460"; 
+								rssfeed_scroll="on"; 
+								rssfeed_scroll_step="6"; 
+								rssfeed_scroll_bar="off"; 
+								rssfeed_target="_blank"; 
+								rssfeed_font_size="12"; 
+								rssfeed_font_face=""; 
+								rssfeed_border="off";  
+								rssfeed_title="on"; 
+								rssfeed_title_name=""; 
+								rssfeed_title_bgcolor="#604196"; 
+								rssfeed_title_color="#fff"; 
+								rssfeed_title_bgimage=""; 
+								rssfeed_footer="off"; 
+								rssfeed_footer_name="rss feed"; 
+								rssfeed_footer_bgcolor="#fff"; 
+								rssfeed_footer_color="#333"; 
+								rssfeed_footer_bgimage=""; 
+								rssfeed_item_title_length="50"; 
+								rssfeed_item_title_color="#000"; 
+								rssfeed_item_bgcolor="transparent"; 
+								rssfeed_item_bgimage=""; 
+								rssfeed_item_border_bottom="on"; 
+								rssfeed_item_source_icon="off"; 
+								rssfeed_item_date="on"; 
+								rssfeed_item_description="on"; 
+								rssfeed_item_description_length="300"; 
 								rssfeed_item_description_color="#666"; 
 								rssfeed_item_description_link_color="#333"; 
 								rssfeed_item_description_tag="off"; 
@@ -485,123 +469,67 @@
 
 							</script> 
 							<script type="text/javascript" src="//feed.surfing-waves.com/js/rss-feed.js"></script> 
-							<!-- start feedwind code --> 
-							<!-- <script type="text/javascript" src="https://feed.mikle.com/js/fw-loader.js" preloader-text="Loading..." data-fw-param="140581/"></script>  -->
-							<!-- end feedwind code -->
+
 
 						</div>
+
+						<div class="col-sm-12 col-md-4 col-xxl-3 padding-20 hide-xxl noticia_4">
+
+
+							<script type="text/javascript"> 
+
+								rssfeed_url = new Array(); 
+								rssfeed_url[0]="http://web.infomoney.com.br/offline/rss/investimentos.xml"; 
+								rssfeed_frame_width="250"; 
+								rssfeed_frame_height="460"; 
+								rssfeed_scroll="on"; 
+								rssfeed_scroll_step="6"; 
+								rssfeed_scroll_bar="off"; 
+								rssfeed_target="_blank"; 
+								rssfeed_font_size="12"; 
+								rssfeed_font_face=""; 
+								rssfeed_border="off";  
+								rssfeed_title="on"; 
+								rssfeed_title_name=""; 
+								rssfeed_title_bgcolor="#604196"; 
+								rssfeed_title_color="#fff"; 
+								rssfeed_title_bgimage=""; 
+								rssfeed_footer="off"; 
+								rssfeed_footer_name="rss feed"; 
+								rssfeed_footer_bgcolor="#fff"; 
+								rssfeed_footer_color="#333"; 
+								rssfeed_footer_bgimage=""; 
+								rssfeed_item_title_length="50"; 
+								rssfeed_item_title_color="#000"; 
+								rssfeed_item_bgcolor="transparent"; 
+								rssfeed_item_bgimage=""; 
+								rssfeed_item_border_bottom="on"; 
+								rssfeed_item_source_icon="off"; 
+								rssfeed_item_date="on"; 
+								rssfeed_item_description="on"; 
+								rssfeed_item_description_length="300"; 
+								rssfeed_item_description_color="#666"; 
+								rssfeed_item_description_link_color="#333"; 
+								rssfeed_item_description_tag="off"; 
+								rssfeed_no_items="0"; 
+								rssfeed_cache = "df8b500a86cd22a767b996a6c9db521d"; 
+
+							</script> 
+							<script type="text/javascript" src="//feed.surfing-waves.com/js/rss-feed.js"></script> 
+
 					</div>
-					<!-- TradingView Widget END -->
 
-
-
-
-
-<!-- 					<div class="row no-gutters">
-						<div class="color-secondary bold">Atualizado recentemente...</div>
-						<div class="color-secondary w100">
-							<table class="table_noticias">
-								<tbody>
-									<tr class="noticia_linha">
-										<td class="noticia_hora">2 horas atrás</td>
-										<td class="noticia_descricao">Ibovespa fecha acima de 110mil pontos e renova máxima de fevereiro...</td>
-										<td class="noticias_more"><i class="fas fa-ellipsis-v"></i></td>
-									</tr>
-									<tr class="noticia_linha">
-										<td class="noticia_hora">3 horas atrás</td>
-										<td class="noticia_descricao">S&P Global revisa perspectiva da BRF para positiva, mantém rating de BB...</td>
-										<td class="noticias_more"><i class="fas fa-ellipsis-v"></i></td>
-									</tr>
-									<tr class="noticia_linha">
-										<td class="noticia_hora">3 horas atrás</td>
-										<td class="noticia_descricao">FISD11, HGRE11, PBLV11: Confira as últimas novidades do setor, Ifix sobe...</td>
-										<td class="noticias_more"><i class="fas fa-ellipsis-v"></i></td>
-									</tr>
-
-									<tr class="noticia_linha">
-										<td class="noticia_hora">4 horas atrás</td>
-										<td class="noticia_descricao">Dólar cai para mínima de três meses; dados econômicos fracos não geram recuperação...</td>
-										<td class="noticias_more"><i class="fas fa-ellipsis-v"></i></td>
-									</tr>
-
-									<tr class="noticia_linha">
-										<td class="noticia_hora">4 horas atrás</td>
-										<td class="noticia_descricao">Se o país fizer besteira afunda de novo, diz Guedes....</td>
-										<td class="noticias_more"><i class="fas fa-ellipsis-v"></i></td>
-									</tr>
-								</tbody>
-							</table>
-
-						</div>
-
-
-
-					</div> -->
 				</div>
 			</div>
 
-
-<!-- 			<div class="col-sm-12 col-md-5">
-				<div class="card h-100 gradient-card-4 margin-b-0">
-
-					<h5 class="card-title">Mensagens do Sistema</h5>
-
-					<div class="color-blue margin-b-20 margin-t-20 text-center">Mensagens do sistema serão registradas abaixo.</div>
-
-					<div class="mensagem_container">
-						<div class="mensagem_box">
-							<div class=""> Mensagem exemplo 1  						
-								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-							</div>
-						</div>
-
-						<div class="mensagem_box">
-							<div class=""> Mensagem exemplo 2  						
-								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-							</div>
-						</div>
-
-						<div class="mensagem_box">
-							<div class=""> Mensagem exemplo 3  						
-								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-							</div>
-						</div>
-					</div>
-
-
-				</div>
-			</div>
-		-->
-	</div>
-</section>
+		</div>
+	</section>
 
 
 
 
 </div>
 
-
-<!-- <script src="/public/javascripts/progressbar.min.js"></script>
-
-<script type="text/javascript">
-
-	var circle = new ProgressBar.Circle('#progress', {
-		color: '#FCB03C',
-		strokeWidth: 3,
-		trailWidth: 1,
-		text: {
-			value: 36
-		}
-	});
-
-
-</script> -->
 
 
 <script>

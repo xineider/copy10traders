@@ -50,6 +50,10 @@
 												</td>
 												<td class="text-center">
 													<button class="btn btn-primary ajax-load-to" href="/sistema/editar-usuario/<%= data[usuario.id +'_usuarios'][i]._id %>" data-to="box-adicionar-usuario">Editar</button>
+
+													<button class="btn btn-primary ajax-load-to" href="/sistema/alterar-senha-usuario/<%= data[usuario.id +'_usuarios'][i]._id %>" data-to="box-adicionar-usuario">Alterar Senha</button>
+
+													<button class="btn btn-red ajax-load-to" href="/sistema/bloquear-usuario/<%= data[usuario.id +'_usuarios'][i]._id %>" data-to="box-adicionar-usuario">Bloquear Usuário</button>
 												</td>
 
 

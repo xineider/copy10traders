@@ -1,0 +1,29 @@
+<%if(usuario.nivel == 2){%>
+
+<div class="white padding-5 margin-t-10">
+	<div class="">Alterar Senha do Usuário!</div>
+
+	<div class="margin-b-10">
+		Você tem certeza que deseja alterar a senha do <strong><%= data[usuario.id +'_usuario_alterar_senha'].nome %></strong>?
+		<br>
+		Será enviado uma nova senha para o email do usuário :<br><%= data[usuario.id +'_usuario_alterar_senha'].email %>
+	</div>
+
+	<form method="POST" action="" enctype="multipart/form-data">
+
+
+
+		<input type="hidden" name="id_usuario" value="<%= data[usuario.id +'_usuario_alterar_senha']._id %>">
+
+
+		<button type="button" data-href="/sistema/atualizar-senha-usuario/" class="btn btn-primary ajax-submit" title="Alterar Senha" data-action="/sistema" >Alterar Senha</button>
+
+	</form>
+
+</div>
+
+<%}else{%>
+<div class="padding=10">
+	Você não pode acessar essa funcionalidade!!!
+</div>
+<%}%>

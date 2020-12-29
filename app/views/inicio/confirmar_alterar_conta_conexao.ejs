@@ -1,22 +1,21 @@
 
 
 <div class="padding-10">
-	<h5>Confirmar Alterar Conta de Conexão</h5>
+	<h5 class="purple-text text-center">Confirmar Alterar Conta de Conexão</h5>
 
-	<div class="margin-b-10">
+	<div class="margin-b-10 text-center">
 
-		Você tem certeza que deseja alterar a conexão de <%= data.dados_c.email %> ?
-		<br><br>Se você fizer isso terá que testar uma nova conta de operação.
-
+		<p>Tem certeza que deseja alterar <span class="purple-text"><%= data.dados_c.email %></span> ?</p>
+		<p>Se você fizer terá que testar uma nova conta!</p>
 	</div>
 
 	<form method="POST" action="" enctype="multipart/form-data">
 
-		<div class="modal-footer">
+		<div class="modal-footer no-border">
 
 			<button class="btn btn_modal btn_modal_close margin-r-10 pointer" data-dismiss="modal">Não</button>
 
-			<button class="btn btn-primary ajax-load-to alterar-conta-teste-conexao" data-to="container_teste_conexao" href="/sistema/load-container-testar-conexao" data-dismiss="modal">Sim</button>
+			<button class="btn btn-primary ajax-load-to alterar-conta-teste-conexao" data-to="container_teste_conexao" href="/sistema/load-container-testar-conexao" data-dismiss="modal">Alterar</button>
 		</div>
 	</form>
 
