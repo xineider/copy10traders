@@ -17,6 +17,7 @@
 
 							<button class="btn btn-primary ajax-load-to" href="/sistema/adicionar-usuario" data-to="box-adicionar-usuario">Adicionar Usuário</button>
 
+							<button class="btn btn-primary ajax-load-to" href="/sistema/adicionar-lote-usuarios" data-to="box-adicionar-usuario">Adicionar Lote de Usuários</button>
 
 							<div class="box-adicionar-usuario"></div>
 							
@@ -26,7 +27,6 @@
 							<table class="table centered highlight responsive-table cell-border tabela_filtrada" id="">
 								<thead>
 									<tr>
-										<th>Nome</th>
 										<th>Email</th>
 										<!-- 	<th>Licença</th> -->
 										<th>Ações</th>
@@ -42,9 +42,6 @@
 
 
 											<tr>
-												<td>
-													<%= data[usuario.id +'_usuarios'][i].nome %>
-												</td>
 												<td class="text-center">
 													<%= data[usuario.id +'_usuarios'][i].email %>
 												</td>

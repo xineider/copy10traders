@@ -81,29 +81,6 @@
 
 
 
-	<% if(usuario.nivel == 3){ %>
-
-
-
-	<div class="licenca_restante_container hide-mobile">
-		<div class="licenca_restante_box white-text">
-			<% if(data[usuario.id +'_licenca_user_dias'] > 0){%>
-			<div>Liçenca Restante<span class="float-right"><%= data[usuario.id +'_licenca_user_dias']%> dias</span></div>
-
-			<%}else{%>
-				<div>Liçenca Expirada!!! Por-favor recarregue para continuar usando o sistema!</div>
-			<%}%>
-
-			<div class="progress">
-				<div class="progress-bar" role="progressbar" style="width: <%= data[usuario.id +'_porcentagem_dias_passados'] %>%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-			</div>
-
-			<div>Vencimento dia <%= data[usuario.id +'_licenca_data_final']%></div>
-
-		</div>
-	</div>
-
-	<%}%>
 
 </nav>
 

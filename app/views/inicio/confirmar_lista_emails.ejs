@@ -1,0 +1,42 @@
+
+
+<div class="padding-10">
+	<h5>Confirmar Envio de Lista de E-mails</h5>
+
+		<div class="margin-b-10">
+
+		Você tem certeza que deseja criar os usuários para os seguintes emails?
+
+		<% if (typeof data[usuario.id +'_lista_emails'] != 'undefined' && data[usuario.id +'_lista_emails'].length > 0) {
+			for (var i = 0; i < data[usuario.id +'_lista_emails'].length; i++) {%>
+			<div class="margin-t-5">
+				<%= data[usuario.id +'_lista_emails'][i] %>
+			</div>
+
+			<%}
+		}else{%>
+		<div class="margin-t-10">Nenhum Email Enviado!</div>
+		<%}%>
+
+	</div>
+
+	<form method="POST" action="" enctype="multipart/form-data">
+
+
+
+		<% if (typeof data[usuario.id +'_lista_emails'] != 'undefined' && data[usuario.id +'_lista_emails'].length > 0) {
+			for (var i = 0; i < data[usuario.id +'_lista_emails'].length; i++) {%>
+			<input type="hidden" name="lista[email][]" value="<%= data[usuario.id +'_lista_emails'][i] %>">
+			<%} 
+		}%>
+
+		<div class="modal-footer">
+
+			<button class="btn btn_modal btn_modal_close margin-r-10 pointer" data-dismiss="modal">Não</button>
+
+			<button class="btn btn-primary ajax-submit" data-href="/sistema/inserir-lote-emails" data-dismiss="modal" data-action="/sistema">Sim</button>
+		</div>
+	</form>
+
+
+</div>

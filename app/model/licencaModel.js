@@ -5,7 +5,8 @@ const licencaSchema = new mongoose.Schema({
 	data_inicio:Date,
 	data_fim: Date,
 	creditos:Number,
-	deletado:Number
+	deletado:Number,
+	vitalicia:Boolean
 });
 
 module.exports = mongoose.model('licenca', licencaSchema,'licenca');

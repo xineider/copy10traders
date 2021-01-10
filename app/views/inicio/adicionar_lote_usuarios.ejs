@@ -1,0 +1,25 @@
+<%if(usuario.nivel == 2){%>
+
+<div class="white padding-5 margin-t-10">
+	<div class="">Adicionar Lote Usuários</div>
+
+
+	<form method="POST" action="/">
+		<div class="form-group">
+			<label>Emails</label>
+			<textarea name="lista_emails"  class="form-control" placeholder="Insira os E-mails um abaixo do Outro"></textarea>								
+		</div>
+
+		<button type="button" data-action="/sistema" data-href="/sistema/popup-cadastrar-usuario-lote/" class="btn btn-primary ajax-submit-open-modal" data-action="/sistema/operacional" data-modal='#modalinfo'>Cadastrar Lote de Usuários</button>
+	</form>
+
+	<div class="block-body error-block" id="error_mensagem_cadastrar_usuario"></div>
+
+</div>
+
+
+
+
+
+
+<%}%>

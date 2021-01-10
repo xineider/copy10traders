@@ -390,6 +390,10 @@ router.get('/adicionar-usuario', function(req, res, next) {
 	res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'inicio/adicionar_usuario', data: data, usuario: req.session.usuario});
 });
 
+router.get('/adicionar-lote-usuarios', function(req, res, next) {
+	res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'inicio/adicionar_lote_usuarios', data: data, usuario: req.session.usuario});
+});
+
 
 
 router.get('/editar-operador/:id', function(req, res, next) {
@@ -501,126 +505,333 @@ router.post('/cadastrar-usuario', function(req, res, next) {
 
 	console.log('email_usuario:' + email_usuario);
 
-	if(POST.nome != ''){
-		if(POST.email != ''){
+	if(POST.email != ''){
 
-			usuariosModel.findOne({'email':email_usuario},function(err,data_usuario_existente){
+		usuariosModel.findOne({'email':email_usuario},function(err,data_usuario_existente){
 
-				console.log('data_usuario_existente');
-				console.log(data_usuario_existente);
-				console.log('-------------------------');
+			console.log('data_usuario_existente');
+			console.log(data_usuario_existente);
+			console.log('-------------------------');
 
-				if(data_usuario_existente == null){
-
-
-					nova_senha = Math.random().toString(36).substring(5);
-
-					var novaSenhaCriptografa = control.Encrypt(nova_senha);
-
-					console.log('nova_senha: '+nova_senha);
-					console.log('novaSenhaCriptografa: ' +novaSenhaCriptografa);
+			if(data_usuario_existente == null){
 
 
-					const novo_usuario = new usuariosModel({ 
-						nome:POST.nome,
-						email:POST.email,
-						senha:novaSenhaCriptografa,
-						deletado:0,
-						nivel:3,
-						data_cadastro:new Date()
-					});
+				nova_senha = Math.random().toString(36).substring(5);
 
-					console.log('novo_usuario');
-					console.log(novo_usuario);
+				var novaSenhaCriptografa = control.Encrypt(nova_senha);
+
+				console.log('nova_senha: '+nova_senha);
+				console.log('novaSenhaCriptografa: ' +novaSenhaCriptografa);
 
 
-					var licenca_data_fim = new Date(POST.data_fim);
-					var licenca_data_inicio = new Date(POST.data_inicio);
+				const novo_usuario = new usuariosModel({ 
+					email:POST.email,
+					senha:novaSenhaCriptografa,
+					deletado:0,
+					nivel:3,
+					data_cadastro:new Date()
+				});
 
-					console.log('licenca_data_fim:' + licenca_data_fim);
-					console.log('POST.data_fim: ' + POST.data_fim);
-
-					moment.locale('pt-br');
-					var data_fim_licenca_moment = moment.utc(POST.data_fim).format('DD/MM/YYYY');
-					console.log('data_fim_licenca_moment:' + data_fim_licenca_moment);
-
-
-
-					var html = "<div style='background: #ffffff;width:100%;'>\
-					<div style='margin:0px auto; max-width:600px;padding: 40px 0px;background: -webkit-linear-gradient(top, #423d64 0%, #aca9d2 100%);'>\
-					<div style='width:100%;height:180px; padding:20px; text-align:center;color:#ffffff;width:100%;'>\
-					<img style='max-width:280px;' src='http://copy10trader.com.br/public/images/Logo_CT.png'>\
-					</div>\
-					<div style='color:#8a8d93;width:100%;padding:20px;border-radius: 0px 30px 0 30px;padding: 10px;'>\
-					<div style='margin:0 auto;width:80%;border-radius: 0px 30px 0 30px;background:#ffffff;padding:10px;'>\
-					Parabéns, você adquiriu o Copy 10 Trader, para acessar o sistema vá para: <a href='http://copy10trader.com.br/' target='_blank'>http://copy10trader.com.br/</a>."+
-					"<br>O e-mail da sua conta é este mesmo que está recebendo."+
-					"<br>Sua senha no Copy 10 Trader é: "+nova_senha+
-					"<br>A sua licença vai até:"+data_fim_licenca_moment+
-					"<br>Caso não esteja conseguindo acessar o sitema, por-favor clique no botão esqueci minha senha!"+
-					'<br><br>Não mostre sua senha para ninguém. A sua conta é responsabilidade sua.'+
-					'<div style="height:40px; padding:10px 20px;color:#8a8d93;width:80%;font-size:14px;">\
-					* Não responda esta mensagem, ela é enviada automaticamente.'+
-					'</div>'+
-					'</div>'+
-					'</div>'+
-					'</div>\
-					</div>';
-					var text = "Parabéns, você adquiriu o Copy 10 Trader, para acessar o sistema vá para: <a href='http://copy10trader.com.br/' target='_blank'>http://copy10trader.com.br/</a>."+
-					"<br>O e-mail da sua conta é este mesmo que está recebendo."+
-					"<br>Sua senha no Copy 10 Trader é: "+nova_senha+
-					"<br>A sua licença vai até:"+data_fim_licenca_moment+
-					"<br>Caso não esteja conseguindo acessar o sitema, por-favor clique no botão esqueci minha senha!"+
-					'<br><br>Não mostre sua senha para ninguém. A sua conta é responsabilidade sua.'+
-					'<br>* Não responda esta mensagem, ela é enviada automaticamente.';
+				console.log('novo_usuario');
+				console.log(novo_usuario);
 
 
-					control.SendMail(email_usuario, 'Acesso ao Copy 10 Trader',text,html);
+				var licenca_data_inicio = new Date();
+				var licenca_data_fim = new Date(2150,1,1);
 
+				console.log('licenca_data_fim:' + licenca_data_fim);
+				console.log('POST.data_fim: ' + POST.data_fim);
+
+				moment.locale('pt-br');
+				var data_fim_licenca_moment = moment.utc(POST.data_fim).format('DD/MM/YYYY');
+				console.log('data_fim_licenca_moment:' + data_fim_licenca_moment);
+
+
+				var html = "<div style='background: #ffffff;width:100%;'>\
+				<div style='margin:0px auto; max-width:600px;padding: 40px 0px;background: -webkit-linear-gradient(top, #423d64 0%, #aca9d2 100%);'>\
+				<div style='width:100%;height:180px; padding:20px; text-align:center;color:#ffffff;width:100%;'>\
+				<img style='max-width:280px;' src='http://copy10trader.com.br/public/images/Logo_CT.png'>\
+				</div>\
+				<div style='color:#8a8d93;width:100%;padding:20px;border-radius: 0px 30px 0 30px;padding: 10px;'>\
+				<div style='margin:0 auto;width:80%;border-radius: 0px 30px 0 30px;background:#ffffff;padding:10px;'>\
+				Parabéns!"+
+				"<br>Você acaba de adquirir o Copy Trader, Robô desenvolvido para otimizar e aumentar seus lucros,operando junto com nossos traders espalhados pelo MUNDO!"+
+				"<br>Para acessar o sistema vá para: <a href='http://copy10trader.com.br/' target='_blank'>http://copy10trader.com.br/</a>."+
+				"<br>O e-mail da sua conta é este mesmo que está recebendo."+
+				"<br>Sua senha no Copy 10 Trader é: "+nova_senha+
+				"<br>Caso não esteja conseguindo acessar o sitema, por-favor clique no botão esqueci minha senha!"+
+				'<br><br>Não mostre sua senha para ninguém. A sua conta é responsabilidade sua.'+
+				'<div style="height:40px; padding:10px 20px;color:#8a8d93;width:80%;font-size:14px;">\
+				* Não responda esta mensagem, ela é enviada automaticamente.'+
+				'</div>'+
+				'</div>'+
+				'</div>'+
+				'</div>\
+				</div>';
+				var text = "Parabéns!" + 
+				"<br>Você acaba de adquirir o Copy Trader, Robô desenvolvido para otimizar e aumentar seus lucros,operando junto com nossos traders espalhados pelo MUNDO!"+
+				"<br>Para acessar o sistema vá para: <a href='http://copy10trader.com.br/' target='_blank'>http://copy10trader.com.br/</a>."+
+				"<br>O e-mail da sua conta é este mesmo que está recebendo."+
+				"<br>Sua senha no Copy 10 Trader é: "+nova_senha+
+				"<br>Caso não esteja conseguindo acessar o sitema, por-favor clique no botão esqueci minha senha!"+
+				'<br><br>Não mostre sua senha para ninguém. A sua conta é responsabilidade sua.'+
+				'<br>* Não responda esta mensagem, ela é enviada automaticamente.';
+
+
+				control.SendMail(email_usuario, 'Acesso ao Copy 10 Trader',text,html);
 
 
 
-					novo_usuario.save(function (err,user) {
-						if (err) {
-							console.log('err')
-							console.log(err)
-						}else{
-							const nova_licenca = new licencaModel({ 
-								id_usuario:mongoose.Types.ObjectId(user.id),
-								data_inicio:licenca_data_inicio,
-								data_fim:licenca_data_fim,
-								creditos:9999,
-								deletado:0
-							});
 
-							nova_licenca.save(function(err2,licenca){
-								if(err2){
-									console.log('err2');
-									console.log(err2);
-								}else{
-									res.json(data);
-								}
-							});
+				novo_usuario.save(function (err,user) {
+					if (err) {
+						console.log('err')
+						console.log(err)
+					}else{
+						const nova_licenca = new licencaModel({ 
+							id_usuario:mongoose.Types.ObjectId(user.id),
+							data_inicio:licenca_data_inicio,
+							data_fim:licenca_data_fim,
+							creditos:999999,
+							deletado:0
+						});
+
+						nova_licenca.save(function(err2,licenca){
+							if(err2){
+								console.log('err2');
+								console.log(err2);
+							}else{
+								res.json(data);
+							}
+						});
 
 
-						}
-					});
+					}
+				});
 
-				}else{
-					res.json({error:'email_ja_cadastrado',element:'input[name="email"]',texto:'*Este Usuário com este e-mail já existe no sistema!'});
-				}
+			}else{
+				res.json({error:'email_ja_cadastrado',element:'input[name="email"]',texto:'*Este Usuário com este e-mail já existe no sistema!'});
+			}
 
-			});
+		});
 
-		}else{
-			res.json({error:'email_vazio',element:'input[name="email"]',texto:'*Por-favor colocar um email para o usuário!'});
-		}
+}else{
+	res.json({error:'email_vazio',element:'input[name="email"]',texto:'*Por-favor colocar um email para o usuário!'});
+}
 
-	}else{
-		res.json({error:'nome_vazio',element:'input[name="nome"]',texto:'*Por-favor colocar um nome para o usuário!'});
-	}
+
 
 });
+
+
+
+router.post('/popup-cadastrar-usuario-lote', function(req, res, next) {
+
+	POST = req.body;
+
+
+	console.log('estou no cadastrar usuario lote popup');
+	console.log(POST);
+	console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+
+	var elementoErro = '#error_mensagem_cadastrar_usuario';
+
+	console.log('elementoErro:' + elementoErro);
+
+	if(POST.lista_sinais != ''){
+
+		var arrayEmails = POST.lista_emails.split("\r\n");
+
+		console.log('00000000 arrayEmails 000000000');
+		console.log(arrayEmails);
+		console.log('000000000000000000000000000000');
+
+
+		var emailsLimpo = [];
+
+		var contadorLinhas = 0;
+
+		var textoErro = '';
+
+		var parar_for = 0;
+
+
+		console.log('arrayEmails.length:' + arrayEmails.length);
+
+		for(i=0; i< arrayEmails.length; i++){
+			
+			contadorLinhas++;
+
+			var email_u = arrayEmails[i].trim().toLowerCase();
+			console.log('email:' + email_u);
+			console.log('parar_for:'  + parar_for);
+
+			emailsLimpo.push(email_u);			
+
+		}
+
+
+
+		console.log('emailsLimpo');
+		console.log(emailsLimpo);
+
+		data[req.session.usuario.id + '_lista_emails'] = emailsLimpo;
+
+		console.log('ggggggggggg data lista_emails ggggggggggggg');
+		console.log(data);
+		console.log('gggggggggggggggggggggggggggggggggggggggggggg');
+
+		res.render(req.isAjaxRequest() == true ? 'api' : 'montador', {html: 'inicio/confirmar_lista_emails', data: data, usuario: req.session.usuario});
+	}else{
+		res.json({error:'lista_vazia',element:elementoErro,texto:'A lista não pode ser vazia!'});
+	}
+
+
+});
+
+
+router.post('/inserir-lote-emails', function(req, res, next) {
+	POST = req.body;
+
+	console.log('______________________ ESTOU NO INSERIR LOTE EMAILS ____________________________________');
+	console.log(POST);
+	console.log('_________________________________________________________________________________');
+
+	console.log(POST.lista);
+
+	var erro_vazio = 0;
+	var erro_data = 0;
+
+
+	array_insercao = [];
+	array_senhas = [];
+
+	array_insercao_licenca = [];
+
+	for(i=0; i< POST.lista.email.length; i++){
+
+		if(POST.lista.email[i] != ''){
+
+			var nova_senha = Math.random().toString(36).substring(5);
+
+			var novaSenhaCriptografa = control.Encrypt(nova_senha);
+
+
+			array_insercao.push({
+				email:POST.lista.email[i],
+				senha:novaSenhaCriptografa,
+				deletado:0,
+				nivel:3,
+				data_cadastro:new Date()
+			});
+
+
+
+
+			array_senhas.push(nova_senha);
+
+			console.log('sssssssssssssssssssssssssssssssssssssssss');
+			console.log(array_insercao);
+			console.log('sssssssssssssssssssssssssssssssssssssssss');
+
+
+		}
+
+
+	}
+
+
+	console.log('sssssssssssssssssssssssssssssssssssssssss');
+	console.log(array_insercao);
+	console.log('sssssssssssssssssssssssssssssssssssssssss');
+
+	console.log('sssssssssssssssssssssssssssssssssssssssss');
+	console.log(array_senhas);
+	console.log('sssssssssssssssssssssssssssssssssssssssss');
+
+	var data_inicio = new Date();
+	var data_fim = new Date(2150,1,1);
+
+
+
+	usuariosModel.insertMany(array_insercao, function(error, user) {
+		console.log('user');
+		console.log(user);
+		console.log('user.length: ' + user.length);
+		for(i=0; i<user.length;i++){
+			array_insercao_licenca.push({ 
+				id_usuario:mongoose.Types.ObjectId(user[i].id),
+				data_inicio:data_inicio,
+				data_fim:data_fim,
+				creditos:99999,
+				vitalicia:true,
+				deletado:0
+			});
+
+
+
+			var html = "<div style='background: #ffffff;width:100%;'>\
+			<div style='margin:0px auto; max-width:600px;padding: 40px 0px;background: -webkit-linear-gradient(top, #423d64 0%, #aca9d2 100%);'>\
+			<div style='width:100%;height:180px; padding:20px; text-align:center;color:#ffffff;width:100%;'>\
+			<img style='max-width:280px;' src='http://copy10trader.com.br/public/images/Logo_CT.png'>\
+			</div>\
+			<div style='color:#8a8d93;width:100%;padding:20px;border-radius: 0px 30px 0 30px;padding: 10px;'>\
+			<div style='margin:0 auto;width:80%;border-radius: 0px 30px 0 30px;background:#ffffff;padding:10px;'>\
+			Parabéns!"+
+			"<br>Você acaba de adquirir o Copy Trader, Robô desenvolvido para otimizar e aumentar seus lucros,operando junto com nossos traders espalhados pelo MUNDO!"+
+			"<br>Para acessar o sistema vá para: <a href='http://copy10trader.com.br/' target='_blank'>http://copy10trader.com.br/</a>."+
+			"<br>O e-mail da sua conta é este mesmo que está recebendo."+
+			"<br>Sua senha no Copy 10 Trader é: "+array_senhas[i]+
+			"<br>Caso não esteja conseguindo acessar o sitema, por-favor clique no botão esqueci minha senha!"+
+			'<br><br>Não mostre sua senha para ninguém. A sua conta é responsabilidade sua.'+
+			'<div style="height:40px; padding:10px 20px;color:#8a8d93;width:80%;font-size:14px;">\
+			* Não responda esta mensagem, ela é enviada automaticamente.'+
+			'</div>'+
+			'</div>'+
+			'</div>'+
+			'</div>\
+			</div>';
+			var text = "Parabéns!" + 
+			"<br>Você acaba de adquirir o Copy Trader, Robô desenvolvido para otimizar e aumentar seus lucros,operando junto com nossos traders espalhados pelo MUNDO!"+
+			"<br>Para acessar o sistema vá para: <a href='http://copy10trader.com.br/' target='_blank'>http://copy10trader.com.br/</a>."+
+			"<br>O e-mail da sua conta é este mesmo que está recebendo."+
+			"<br>Sua senha no Copy 10 Trader é: "+array_senhas[i]+
+			"<br>Caso não esteja conseguindo acessar o sitema, por-favor clique no botão esqueci minha senha!"+
+			'<br><br>Não mostre sua senha para ninguém. A sua conta é responsabilidade sua.'+
+			'<br>* Não responda esta mensagem, ela é enviada automaticamente.';
+
+
+
+
+
+
+			control.SendMail(array_insercao[i].email, 'Acesso ao Copy 10 Trader',text,html);
+
+
+
+
+
+		}
+
+		console.log('array_insercao_licenca');
+		console.log(array_insercao_licenca);
+
+		licencaModel.insertMany(array_insercao_licenca,function(error2,licenca){
+			res.json(data);
+		});
+
+
+	});
+
+
+
+});
+
+
+
+
+
+
 
 
 router.post('/atualizar-usuario', function(req, res, next) {
@@ -724,7 +935,7 @@ router.post('/testar-conexao', function(req, res, next) {
 				id_usuario:mongoose.Types.ObjectId(req.session.usuario.id),
 				email:POST.email,
 				senha:POST.senha,
-				status:'',
+				status:'conectado',
 				deletado:0,
 				data_cadastro:new Date()
 			});
@@ -801,7 +1012,7 @@ router.post('/iniciar-operacao', function(req, res, next) {
 										console.log(data_usuarios_operadores_i);
 										console.log('-----------------------------------------------');
 
-										
+
 
 										if(data_usuarios_operadores_i != null){
 

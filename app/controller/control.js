@@ -87,27 +87,93 @@ class Control {
 
 	SendMail(para, assunto,text, html) {
 
-		var usuario = 'naoresponda_copymoneycanga@hotmail.com';
-		var senha = 'senha_C4ng4_M1n8227';
+		
 
-		var randomico = Math.floor(Math.random() * 6); 
+		var randomico = Math.floor(Math.random() * 16); 
 		console.log('randomico: ' + randomico);
 
 		if(randomico == 0){
-			
+			var usuario = 'naoresponda01@copy10traderglobal.com.br';
+			var senha = '@Emailsuporte01';			
+		}else if(randomico == 1){
+			var usuario = 'naoresponda02@copy10traderglobal.com.br';
+			var senha = '@Emailsuporte02';
+		}else if(randomico == 2){
+			var usuario = 'naoresponda03@copy10traderglobal.com.br';
+			var senha = '@Emailsuporte03';
+		}else if(randomico == 3){
+			var usuario = 'naoresponda04@copy10traderglobal.com.br';
+			var senha = '@Emailsuporte04';
+		}else if(randomico == 4){
+			var usuario = 'naoresponda05@copy10traderglobal.com.br';
+			var senha = '@Emailsuporte05';
+		}else if(randomico == 5){
+			var usuario = 'naoresponda06@copy10traderglobal.com.br';
+			var senha = '@Emailsuporte06';
+		}else if(randomico == 6){
+			var usuario = 'naoresponda07@copy10traderglobal.com.br';
+			var senha = '@Emailsuporte07';
+		}else if(randomico == 7){
+			var usuario = 'naoresponda08@copy10traderglobal.com.br';
+			var senha = '@Emailsuporte08';
+		}else if(randomico == 8){
+			var usuario = 'naoresponda09@copy10traderglobal.com.br';
+			var senha = '@Emailsuporte09';
+		}else if(randomico == 9){
+			var usuario = 'naoresponda10@copy10traderglobal.com.br';
+			var senha = '@Emailsuporte10';
+		}else if(randomico == 10){
+			var usuario = 'naoresponda11@copy10traderglobal.com.br';
+			var senha = '@Emailsuporte11';
+		}else if(randomico == 11){
+			var usuario = 'naoresponda12@copy10traderglobal.com.br';
+			var senha = '@Emailsuporte12';
+		}else if(randomico == 12){
+			var usuario = 'naoresponda13@copy10traderglobal.com.br';
+			var senha = '@Emailsuporte13';
+		}else if(randomico == 13){
+			var usuario = 'naoresponda14@copy10traderglobal.com.br';
+			var senha = '@Emailsuporte14';
+		}else{
+			var usuario = 'naoresponda15@copy10traderglobal.com.br';
+			var senha = '@Emailsuporte15';
 		}
 
 		let transporter = nodemailer.createTransport({
-			host: 'smtp-mail.outlook.com',			
-			secure: false,
-			port: 587,						
+			name: 'mail.copy10traderglobal.com.br',
+			host:'mail.copy10traderglobal.com.br',
+			secureConnection: true,
+			port: 465,
 			auth: {
 				user: usuario,
-				pass: senha
-			},  tls: {
-				ciphers:'SSLv3'
+				pass: senha,
+			},
+			tls: {
+				rejectUnauthorized:false
 			}
+			// host: 'smtp-mail.outlook.com',
+			// secureConnection: false,
+			// port: 587,						
+			// auth: {
+			// 	user: 'naoresponda_copymoneycanga2@hotmail.com',
+			// 	pass: 'senha_C4ng4_M1n8227'
+			// },
+			// tls: {
+			// 	ciphers:'SSLv3'
+			// }
 		});
+
+		// let transporter = nodemailer.createTransport({
+		// 	host: 'smtp-mail.outlook.com',			
+		// 	secure: false,
+		// 	port: 587,						
+		// 	auth: {
+		// 		user: usuario,
+		// 		pass: senha
+		// 	},  tls: {
+		// 		ciphers:'SSLv3'
+		// 	}
+		// });
 
 
 		let mailOptions = {

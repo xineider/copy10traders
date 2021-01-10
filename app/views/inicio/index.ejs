@@ -151,6 +151,10 @@
 
 									</div>
 
+									<div class="w100 none operacoes_mensagem_no_data">
+										Sem dados suficientes até o momento!
+									</div>
+
 								</div>
 							</div>
 
@@ -289,7 +293,7 @@
 
 
 							<%}else {%>
-							<button type="button" id="botao_parar_sistema" data-href="/sistema/parar-operacao/" class="btn btn-danger btn-block margin-t-10 margin-b-10 ajax-submit" title="Parar Sistema" data-action="/sistema">Parar Sistema</button>
+							<button type="button" id="botao_parar_sistema" data-href="/sistema/parar-operacao/" class="btn btn-danger btn-block margin-t-10 margin-b-10 ajax-submit-timer" title="Parar Sistema" data-action="/sistema" data-conect_teste="desconectar">Parar Sistema</button>
 							<% }%>
 						</div>
 
@@ -316,7 +320,7 @@
 
 					<h5 class="card-title">Notícias
 
-					<button class="btn transparent float-right" onClick="window.location.reload();">Carregar Notícias</button>
+						<button class="btn transparent float-right" onClick="window.location.reload();">Carregar Notícias</button>
 
 					</h5>
 
@@ -517,72 +521,107 @@
 							</script> 
 							<script type="text/javascript" src="//feed.surfing-waves.com/js/rss-feed.js"></script> 
 
+						</div>
+
 					</div>
-
 				</div>
+
 			</div>
-
-		</div>
-	</section>
+		</section>
 
 
 
 
-</div>
+	</div>
 
 
 
-<script>
+	<script>
 
 
-	Chart.defaults.global.defaultFontSize = 16;
-	var canvas = document.getElementById("grafico_historico");
-	var ctx = canvas.getContext('2d');
+		Chart.defaults.global.defaultFontSize = 16;
+		var canvas = document.getElementById("grafico_historico");
+		var ctx = canvas.getContext('2d');
 
 
+		<% if(data[usuario.id +'_entrada_acertos']>0 && data[usuario.id +'_entrada_falha'] >0 ){%>
 
 
-	var data = {
-		datasets: [
-		{
-			backgroundColor: ['#1221d6','#beb6ed'],
-			data: [<%= data[usuario.id +'_entrada_acertos'] %>, <%= data[usuario.id +'_entrada_falha'] %>],
-			label:'Operações',
-			borderWidth: 0
-		}
-		],labels: [
-		'Acertos',
-		'Falhas'
-		]
-	};
+			var data = {
+				datasets: [
+				{
+					backgroundColor: ['#1221d6','#beb6ed'],
+					data: [<%= data[usuario.id +'_entrada_acertos'] %>, <%= data[usuario.id +'_entrada_falha'] %>],
+					label:'Operações',
+					borderWidth: 0
+				}
+				],labels: [
+				'Acertos',
+				'Falhas'
+				]
+			};
 
-	var options = {
-		legend:{
-			display:false
-		},
-		segmentShowStroke: false,
-		responsive:true
-	}
-
-
-
-
-
-	var myBarChart = new Chart(ctx, {
-		type: 'pie',
-		data: data,
-		options:options
-	});
+			var options = {
+				legend:{
+					display:false
+				},
+				segmentShowStroke: false,
+				responsive:true
+			}
 
 
 
 
 
+			var myBarChart = new Chart(ctx, {
+				type: 'pie',
+				data: data,
+				options:options
+			});
+
+
+			<%}else{%>
+
+				var data = {
+					datasets: [
+					{
+						backgroundColor: ['#1221d6','#beb6ed'],
+						data: [10,0],
+						label:'Operações',
+						borderWidth: 0
+					}
+					],labels: [
+					'',
+					''
+					]
+				};
+
+				var options = {
+					legend:{
+						display:false
+					},
+					segmentShowStroke: false,
+					responsive:true
+				}
+
+
+
+
+
+				var myBarChart = new Chart(ctx, {
+					type: 'pie',
+					data: data,
+					options:options
+				});
+
+
+
+				$('.operacoes_mensagem_no_data').removeClass('none')
+				<%}%>
 
 
 
 
 
 
-
-</script>
+			</script>

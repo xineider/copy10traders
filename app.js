@@ -18,7 +18,6 @@ var api = require('./app/controller/api');
 
 
 var minha_conta = require('./app/controller/minha_conta');
-
 var operadores = require('./app/controller/operadores');
 var operacional = require('./app/controller/operacional');
 

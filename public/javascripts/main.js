@@ -128,7 +128,7 @@ $(document).ready(function () {
 		var conect_teste = $(this).data('conect_teste');
 		if (VerificarForm(form) == true) {
 			console.log('o que está indo de fato para o submit ajax de cor')
-			SubmitAjaxTimer(post, link, back,conect_teste,15000);
+			SubmitAjaxTimer(post, link, back,conect_teste,10000);
 		}
 	});
 

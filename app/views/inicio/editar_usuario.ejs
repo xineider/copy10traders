@@ -6,29 +6,13 @@
 
 	<form method="POST" action="/">
 		<div class="form-group">
-			<label>Nome</label>
-			<input type="text" name="nome" class="input-material" placeholder="Nome " value="<%=data[usuario.id +'_usuario_editar'].nome%>" >									
-		</div>
-		<div class="form-group">
 			<label>Email</label>
 			<input type="email" name="email" class="input-material" placeholder="E-mail" value="<%=data[usuario.id +'_usuario_editar'].email%>">									
-		</div>
-
-		<div class="form-group">
-			<label>Data Início Licença</label>
-			<input type="date" name="data_inicio" value="<%=data[usuario.id +'_usuario_editar_data_inicio_licenca']%>" class="input-material" placeholder="Licença">									
-		</div>
-
-
-		<div class="form-group">
-			<label>Data Fim Licença</label>
-			<input type="date" name="data_fim" class="input-material" placeholder="Licença" value="<%=data[usuario.id +'_usuario_editar_data_fim_licenca']%>">									
 		</div>
 
 		<input type="hidden" name="id_usuario" value="<%= data[usuario.id +'_usuario_editar']._id %>">
 
 		<input type="hidden" name="id_licenca" value="<%= data[usuario.id +'_usuario_editar_licenca']._id %>">
-
 
 
 		<button class="btn btn-primary ajax-submit" data-href="/sistema/atualizar-usuario/" data-action="/sistema/">

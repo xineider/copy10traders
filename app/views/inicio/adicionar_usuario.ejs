@@ -6,23 +6,8 @@
 
 	<form method="POST" action="/">
 		<div class="form-group">
-			<label>Nome</label>
-			<input type="text" name="nome" class="input-material" placeholder="Nome ">									
-		</div>
-		<div class="form-group">
 			<label>Email</label>
 			<input type="email" name="email" class="input-material" placeholder="E-mail ">									
-		</div>
-
-		<div class="form-group">
-			<label>Data Início Licença</label>
-			<input type="date" name="data_inicio" value="<%=data[usuario.id +'_hoje_licenca']%>" class="input-material" placeholder="Licença">									
-		</div>
-
-
-		<div class="form-group">
-			<label>Data Fim Licença</label>
-			<input type="date" name="data_fim" class="input-material" placeholder="Licença">									
 		</div>
 
 		<button class="btn btn-primary ajax-submit" data-href="/sistema/cadastrar-usuario/">

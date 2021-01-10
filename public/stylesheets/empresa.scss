@@ -24,7 +24,7 @@ $secondary-color:#202738;
     }
 
     .modal-content{
-      
+
     }
 
 
@@ -416,9 +416,6 @@ nav#sidebar li a:hover i{
   text-align: center;
 }
 
-.performance_box{
-  border-left: 1px solid #455dbf;
-}
 
 .circle_performance{
   display: inline-block;
@@ -702,6 +699,12 @@ div[data-anim~=base] {
     justify-content: center;
 
   }
+
+  .performance_box{
+    border-left: 1px solid #455dbf;
+  }
+
+
 }
 
 
@@ -857,7 +860,7 @@ div[data-anim~=base] {
   &:hover{
     background:#a7a7a7;
   }
-   
+
 }
 
 .operadores_modal_video{
